@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Text Tools - All-in-One Utilities</title>
+    <!-- Load QRCode.js from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --primary-color: #4a6ee0;
+            --secondary-color: #f0f2f5;
+            --border-color: #e0e0e0;
+            --tab-active-color: #4a6ee0;
+            --tab-inactive-color: #cccccc;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #f0f0f0;
+            --primary-color: #6d8eff;
+            --secondary-color: #2d2d2d;
+            --border-color: #444444;
+            --tab-active-color: #6d8eff;
+            --tab-inactive-color: #555555;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background 0.3s ease;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-color);
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+
+        /* Tabs Navigation */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .tab-button {
+            padding: 10px 15px;
+            background: var(--secondary-color);
+            border: none;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .tab-button.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            border-radius: 0 5px 5px 5px;
+            background: var(--secondary-color);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Tool Styling */
+        .tool {
+            margin-bottom: 20px;
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            resize: vertical;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .output {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: var(--bg-color);
+            border: 1px dashed var(--border-color);
+            border-radius: 5px;
+            word-break: break-all;
+        }
+
+        /* QR Code specific styles */
+        #qrCode {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 250px;
+        }
+
+        #qrCode canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Dark/Light Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--secondary-color);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+
+        /* For dark theme QR display */
+[data-theme="dark"] #qrCode {
+    background-color: #1a1a1a;
+    padding: 20px;
+}
+
+/* For light theme QR display */
+[data-theme="light"] #qrCode {
+    background-color: #ffffff;
+    padding: 20px;
+}
+
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+            .tabs {
+                flex-wrap: wrap;
+            }
+            .tab-button {
+                flex: 1;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    <h1>Super Text Tools</h1>
+    <p class="subtitle">All-in-one utilities for developers, writers, and more!</p>
+
+    <!-- Tabs Navigation -->
+    <div class="tabs">
+        <button class="tab-button active" onclick="openTab('text-tools')">Text Tools</button>
+        <button class="tab-button" onclick="openTab('encode-tools')">Encode/Decode</button>
+        <button class="tab-button" onclick="openTab('qr-generator')">QR Generator</button>
+        <button class="tab-button" onclick="openTab('lorem-ipsum')">Lorem Ipsum</button>
+    </div>
+
+    <!-- Tab 1: Text Tools -->
+    <div id="text-tools" class="tab-content active">
+        <div class="tool">
+            <h3>Word & Character Counter</h3>
+            <textarea id="textInput" placeholder="Type or paste text here..."></textarea>
+            <div>
+                <strong>Words:</strong> <span id="wordCount">0</span> | 
+                <strong>Characters:</strong> <span id="charCount">0</span>
+            </div>
+        </div>
+
+        <div class="tool">
+            <h3>Case Converter</h3>
+            <textarea id="caseInput" placeholder="Type text to convert..."></textarea>
+            <button onclick="convertToUpper()">UPPERCASE</button>
+            <button onclick="convertToLower()">lowercase</button>
+        </div>
+
+        <div class="tool">
+            <h3>Random Password Generator</h3>
+            <button onclick="generatePassword()">Generate Password</button>
+            <div id="passwordResult" class="output"></div>
+        </div>
+    </div>
+
+    <!-- Tab 2: Encode/Decode Tools -->
+    <div id="encode-tools" class="tab-content">
+        <div class="tool">
+            <h3>Base64 Encode/Decode</h3>
+            <textarea id="base64Input" placeholder="Enter text to encode or Base64 to decode..."></textarea>
+            <button onclick="base64Encode()">Encode</button>
+            <button onclick="base64Decode()">Decode</button>
+            <div id="base64Output" class="output"></div>
+        </div>
+
+        <div class="tool">
+            <h3>URL Encoder/Decoder</h3>
+            <textarea id="urlInput" placeholder="Enter URL to encode or decode..."></textarea>
+            <button onclick="urlEncode()">Encode</button>
+            <button onclick="urlDecode()">Decode</button>
+            <div id="urlOutput" class="output"></div>
+        </div>
+    </div>
+
+    <!-- Tab 3: QR Generator -->
+    <div id="qr-generator" class="tab-content">
+        <div class="tool">
+            <h3>QR Code Generator</h3>
+            <input type="text" id="qrText" placeholder="Enter text or URL...">
+            <button onclick="generateQR()">Generate QR Code</button>
+            <button onclick="downloadQR()" id="downloadBtn" disabled>Download QR Code</button>
+            <div id="qrCode" class="output">
+                QR Code will appear here
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 4: Lorem Ipsum Generator -->
+    <div id="lorem-ipsum" class="tab-content">
+        <div class="tool">
+            <h3>Lorem Ipsum Generator</h3>
+            <button onclick="generateLoremIpsum(1)">1 Paragraph</button>
+            <button onclick="generateLoremIpsum(3)">3 Paragraphs</button>
+            <button onclick="generateLoremIpsum(5)">5 Paragraphs</button>
+            <div id="loremOutput" class="output"></div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Navigation
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Word/Character Counter
+        document.getElementById('textInput').addEventListener('input', function() {
+            const text = this.value;
+            document.getElementById('wordCount').textContent = text.trim() ? text.trim().split(/\s+/).length : 0;
+            document.getElementById('charCount').textContent = text.length;
+        });
+
+        // Case Converter
+        function convertToUpper() {
+            const text = document.getElementById('caseInput').value;
+            document.getElementById('caseInput').value = text.toUpperCase();
+        }
+        function convertToLower() {
+            const text = document.getElementById('caseInput').value;
+            document.getElementById('caseInput').value = text.toLowerCase();
+        }
+
+        // Password Generator
+        function generatePassword() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+            let password = '';
+            for (let i = 0; i < 12; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('passwordResult').textContent = password;
+        }
+
+        // Base64 Tools
+        function base64Encode() {
+            const text = document.getElementById('base64Input').value;
+            document.getElementById('base64Output').textContent = btoa(encodeURIComponent(text));
+        }
+        function base64Decode() {
+            const text = document.getElementById('base64Input').value;
+            try {
+                document.getElementById('base64Output').textContent = decodeURIComponent(atob(text));
+            } catch {
+                document.getElementById('base64Output').textContent = "Invalid Base64!";
+            }
+        }
+
+        // URL Tools
+        function urlEncode() {
+            const text = document.getElementById('urlInput').value;
+            document.getElementById('urlOutput').textContent = encodeURIComponent(text);
+        }
+        function urlDecode() {
+            const text = document.getElementById('urlInput').value;
+            document.getElementById('urlOutput').textContent = decodeURIComponent(text);
+        }
+
+        // QR Generator
+        let qrCodeInstance = null;
+
+function generateQR() {
+    const text = document.getElementById('qrText').value.trim();
+    const qrDiv = document.getElementById('qrCode');
+    const downloadBtn = document.getElementById('downloadBtn');
+    
+    if (!text) {
+        qrDiv.innerHTML = "Please enter text first!";
+        downloadBtn.disabled = true;
+        return;
+    }
+
+    qrDiv.innerHTML = '';
+    downloadBtn.disabled = false;
+
+    // Determine current theme
+    const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+    
+    try {
+        qrCodeInstance = new QRCode(qrDiv, {
+            text: text,
+            width: 200,
+            height: 200,
+            colorDark: isDarkTheme ? '#ffffff' : '#000000',
+            colorLight: isDarkTheme ? '#1a1a1a' : '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+        
+        // Store current theme state
+        qrCodeInstance._themeState = isDarkTheme;
+    } catch (e) {
+        qrDiv.innerHTML = "Error generating QR code";
+        console.error(e);
+    }
+}
+
+function downloadQR() {
+    if (!qrCodeInstance) return;
+    
+    const canvas = document.querySelector('#qrCode canvas');
+    if (!canvas) return;
+    
+    // Create a temporary canvas for download with consistent colors
+    const tempCanvas = document.createElement('canvas');
+    const ctx = tempCanvas.getContext('2d');
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+    
+    // Fill background (always white for downloaded QR)
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+    
+    // Draw QR code (always black for downloaded QR)
+    ctx.drawImage(canvas, 0, 0);
+    
+    // Convert to image and download
+    const link = document.createElement('a');
+    link.download = 'qr-code.png';
+    link.href = tempCanvas.toDataURL('image/png');
+    link.click();
+}
+
+        // Lorem Ipsum Generator
+        function generateLoremIpsum(paragraphs) {
+            const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+            let output = "";
+            for (let i = 0; i < paragraphs; i++) {
+                output += `<p>${lorem}</p>`;
+            }
+            document.getElementById('loremOutput').innerHTML = output;
+        }
+
+        // Dark/Light Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute("data-theme");
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+            html.setAttribute("data-theme", newTheme);
+            localStorage.setItem("theme", newTheme);
+            
+            // Regenerate QR code if exists to update colors
+            if (qrCodeInstance && document.getElementById('qrText').value) {
+                generateQR();
+            }
+        }
+
+        // Load saved theme
+        if (localStorage.getItem("theme") === "dark") {
+            document.documentElement.setAttribute("data-theme", "dark");
+        }
+    </script>
+</body>
+</html>
