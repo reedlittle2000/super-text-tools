@@ -424,5 +424,41 @@ function downloadQR() {
         }
     </script>
 </body>
+<footer>
+    <div class="footer-content">
+        <p>© <span id="year"></span> Super Text Tools. All rights reserved.</p>
+        <div class="legal-links">
+            <a href="privacy-policy.html">Privacy Policy</a> | 
+            <a href="terms-of-use.html">Terms of Use</a> |
+            <a href="https://github.com/yourusername/super-text-tools">GitHub</a>
+        </div>
+        <p class="copyright">
+            All tools process data locally in your browser. No tracking.
+        </p>
+    </div>
+</footer>
+
+<style>
+    footer {
+        margin-top: 50px;
+        padding: 20px 0;
+        text-align: center;
+        border-top: 1px solid var(--border-color);
+        font-size: 0.9em;
+    }
+    .legal-links {
+        margin: 10px 0;
+    }
+    .legal-links a {
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+</style>
+
+<script>
+    // Auto-update year
+    document.getElementById('year').textContent = new Date().getFullYear();
+</script>
 
 </html>
+
