@@ -423,6 +423,50 @@ function downloadQR() {
             document.documentElement.setAttribute("data-theme", "dark");
         }
     </script>
+    <div id="cookie-banner" class="hidden">
+    <p>We use only essential cookies. By using our site, you agree to our 
+       <a href="privacy-policy.html">Privacy Policy</a>.</p>
+    <button id="accept-cookies">Accept</button>
+</div>
+
+<style>
+    #cookie-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--secondary-color);
+        padding: 15px;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 1000;
+    }
+    #cookie-banner.hidden {
+        display: none;
+    }
+    #accept-cookies {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 5px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    if (!localStorage.getItem('cookiesAccepted')) {
+        document.getElementById('cookie-banner').classList.remove('hidden');
+    }
+    
+    document.getElementById('accept-cookies').addEventListener('click', function() {
+        localStorage.setItem('cookiesAccepted', 'true');
+        document.getElementById('cookie-banner').classList.add('hidden');
+    });
+</script>
+
 </body>
 <footer>
     <div class="footer-content">
@@ -460,5 +504,6 @@ function downloadQR() {
 </script>
 
 </html>
+
 
 
