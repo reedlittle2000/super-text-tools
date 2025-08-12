@@ -188,6 +188,32 @@
 </head>
 <body>
     <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    <nav class="main-nav">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="privacy-policy.html">Privacy</a>
+    <a href="terms-of-use.html">Terms</a>
+</nav>
+
+<style>
+    .main-nav {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    .main-nav a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    .main-nav a:hover {
+        background-color: var(--secondary-color);
+    }
+</style>
     <h1>Super Tools 247</h1>
     <p class="subtitle">All-in-one utilities for developers, writers, and more!</p>
 
@@ -525,6 +551,7 @@ function downloadQR() {
 </script>
 
 </html>
+
 
 
 
