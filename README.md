@@ -1,4 +1,4 @@
-# Super Text Tools
+# Super Tools 247
 
 
 All-in-one browser-based text utilities for developers.
@@ -16,7 +16,7 @@ All-in-one browser-based text utilities for developers.
 - Netlify Hosting
 
 ## License
-@Reedlittlework@gmail.com
+@Reedlittlework@gmail.com (Sagar Syangtan)
 QRCode - MIT License - See [LICENSE](LICENSE) file
 
 ## Privacy
