@@ -7,7 +7,29 @@
     <meta name="description" content="Free online QR code generator - create custom QR codes for URLs, contact info, and WiFi credentials. Works entirely in your browser with no data collection.">
     <meta name="keywords" content="QR generator, text tools, word counter, base64 encode, developer tools">
     <title>Super Tools 247 - All-in-One Utilities</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- QRCode.js will be loaded dynamically when needed -->
+    
+    <!-- PWA manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Structured data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Super Tools 247",
+      "url": "https://yoursite.com",
+      "description": "All-in-one utilities for developers, writers, and more!",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    
     <style>
         :root {
             --bg-color: #ffffff;
@@ -333,14 +355,20 @@
 
         #cookie-banner {
             position: fixed;
-            bottom: 0;
+            bottom: -100px;
             left: 0;
             right: 0;
             background: var(--secondary-color);
-            padding: 15px;
+            padding: 10px 15px;
             text-align: center;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             z-index: 1000;
+            transition: bottom 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        #cookie-banner.show {
+            bottom: 0;
         }
 
         #cookie-banner p {
@@ -383,7 +411,7 @@
         }
 
         footer {
-            margin-top: auto;
+            margin-top: 50px;
             padding: 30px 0 20px;
             text-align: center;
             border-top: 1px solid var(--border-color);
@@ -403,6 +431,29 @@
         .copyright {
             color: var(--text-color);
             opacity: 0.7;
+        }
+
+        /* Language selector */
+        .language-selector {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+        }
+
+        .language-selector select {
+            padding: 8px 12px;
+            border-radius: 5px;
+            background: var(--secondary-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Error messages */
+        .error-message {
+            color: #ff4444;
+            margin-top: 5px;
+            font-size: 0.9em;
         }
 
         @media (max-width: 768px) {
@@ -431,78 +482,92 @@
             .options-container {
                 grid-template-columns: 1fr;
             }
+            
+            .language-selector {
+                top: 70px;
+                left: 20px;
+            }
         }
     </style>
 </head>
 <body>
     <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
     
+    <!-- Language selector -->
+    <div class="language-selector">
+        <select id="languageSelect" onchange="changeLanguage()">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+        </select>
+    </div>
+    
     <div class="header">
         <a href="index.html" class="logo">Super Tools 247</a>
         <nav class="main-nav">
-            <a href="index.html">Home</a>
-            <a href="about.html">About</a>
-            <a href="privacy-policy.html">Privacy</a>
-            <a href="terms-of-use.html">Terms</a>
+            <a href="index.html" data-i18n="nav.home">Home</a>
+            <a href="about.html" data-i18n="nav.about">About</a>
+            <a href="privacy-policy.html" data-i18n="nav.privacy">Privacy</a>
+            <a href="terms-of-use.html" data-i18n="nav.terms">Terms</a>
         </nav>
     </div>
 
-    <p class="subtitle">All-in-one utilities for developers, writers, and more!</p>
+    <p class="subtitle" data-i18n="subtitle">All-in-one utilities for developers, writers, and more!</p>
 
     <div class="tabs">
-        <button class="tab-button active" onclick="openTab('text-tools')">📝 Text Tools</button>
-        <button class="tab-button" onclick="openTab('encode-tools')">🔗 Encode/Decode</button>
-        <button class="tab-button" onclick="openTab('qr-generator')">🔳 QR Generator</button>
-        <button class="tab-button" onclick="openTab('wifi-qr-generator')">📶 WiFi QR Generator</button>
-        <button class="tab-button" onclick="openTab('lorem-ipsum')">✒️ Lorem Ipsum</button>
-        <button class="tab-button" onclick="openTab('dev-tools')">💻 Dev Tools</button>
+        <button class="tab-button active" onclick="openTab('text-tools')" data-i18n="tabs.text">📝 Text Tools</button>
+        <button class="tab-button" onclick="openTab('encode-tools')" data-i18n="tabs.encode">🔗 Encode/Decode</button>
+        <button class="tab-button" onclick="openTab('qr-generator')" data-i18n="tabs.qr">🔳 QR Generator</button>
+        <button class="tab-button" onclick="openTab('wifi-qr-generator')" data-i18n="tabs.wifi">📶 WiFi QR Generator</button>
+        <button class="tab-button" onclick="openTab('lorem-ipsum')" data-i18n="tabs.lorem">✒️ Lorem Ipsum</button>
+        <button class="tab-button" onclick="openTab('dev-tools')" data-i18n="tabs.dev">💻 Dev Tools</button>
     </div>
 
     <div id="text-tools" class="tab-content active">
         <div class="tool">
-            <h3>Word & Character Counter</h3>
-            <textarea id="textInput" placeholder="Type or paste text here..."></textarea>
+            <h3 data-i18n="text.wordCounter">Word & Character Counter</h3>
+            <textarea id="textInput" placeholder="Type or paste text here..." data-i18n-placeholder="text.typeHere"></textarea>
             <div>
-                <strong>Words:</strong> <span id="wordCount">0</span> | 
-                <strong>Characters:</strong> <span id="charCount">0</span>
+                <strong data-i18n="text.words">Words:</strong> <span id="wordCount">0</span> | 
+                <strong data-i18n="text.chars">Characters:</strong> <span id="charCount">0</span>
             </div>
-            <p class="tool-description">
+            <p class="tool-description" data-i18n="text.wordCounterDesc">
                 Counts words and characters in your text. Useful for writers, students, and social media posts with character limits.
             </p>
         </div>
 
         <div class="tool">
-            <h3>Case Converter</h3>
-            <textarea id="caseInput" placeholder="Type text to convert..."></textarea>
-            <button onclick="convertToUpper()" data-tooltip="Convert to UPPERCASE">UPPERCASE</button>
-            <button onclick="convertToLower()" data-tooltip="Convert to lowercase">lowercase</button>
-            <p class="tool-description">
+            <h3 data-i18n="text.caseConverter">Case Converter</h3>
+            <textarea id="caseInput" placeholder="Type text to convert..." data-i18n-placeholder="text.typeToConvert"></textarea>
+            <button onclick="convertToUpper()" data-tooltip="Convert to UPPERCASE" data-i18n="text.uppercase">UPPERCASE</button>
+            <button onclick="convertToLower()" data-tooltip="Convert to lowercase" data-i18n="text.lowercase">lowercase</button>
+            <p class="tool-description" data-i18n="text.caseConverterDesc">
                 Convert text between uppercase and lowercase. Helpful for formatting titles, headings, or normalizing text.
             </p>
         </div>
 
         <div class="tool">
-            <h3>Random Password Generator</h3>
+            <h3 data-i18n="text.passwordGenerator">Random Password Generator</h3>
             <div class="options-container">
                 <div class="option-group">
-                    <label for="passwordLength">Password Length:</label>
+                    <label for="passwordLength" data-i18n="text.passwordLength">Password Length:</label>
                     <input type="number" id="passwordLength" min="8" max="32" value="12">
                 </div>
                 <div class="option-group">
-                    <label><input type="checkbox" id="useUppercase" checked> Uppercase (A-Z)</label>
-                    <label><input type="checkbox" id="useLowercase" checked> Lowercase (a-z)</label>
+                    <label><input type="checkbox" id="useUppercase" checked> <span data-i18n="text.uppercaseLetters">Uppercase (A-Z)</span></label>
+                    <label><input type="checkbox" id="useLowercase" checked> <span data-i18n="text.lowercaseLetters">Lowercase (a-z)</span></label>
                 </div>
                 <div class="option-group">
-                    <label><input type="checkbox" id="useNumbers" checked> Numbers (0-9)</label>
-                    <label><input type="checkbox" id="useSymbols" checked> Symbols (!@#$)</label>
+                    <label><input type="checkbox" id="useNumbers" checked> <span data-i18n="text.numbers">Numbers (0-9)</span></label>
+                    <label><input type="checkbox" id="useSymbols" checked> <span data-i18n="text.symbols">Symbols (!@#$)</span></label>
                 </div>
             </div>
-            <button onclick="generatePassword()" data-tooltip="Generate secure password">Generate Password</button>
+            <button onclick="generatePassword()" data-tooltip="Generate secure password" data-i18n="text.generatePassword">Generate Password</button>
             <div id="passwordResult" class="output">
                 <span id="passwordText"></span>
-                <button class="copy-btn" onclick="copyToClipboard('passwordText')" data-tooltip="Copy to clipboard">Copy</button>
+                <button class="copy-btn" onclick="copyToClipboard('passwordText')" data-tooltip="Copy to clipboard" data-i18n="text.copy">Copy</button>
             </div>
-            <p class="tool-description">
+            <p class="tool-description" data-i18n="text.passwordGeneratorDesc">
                 Create strong passwords with customizable length and character sets.
             </p>
         </div>
@@ -510,35 +575,37 @@
 
     <div id="encode-tools" class="tab-content">
         <div class="tool">
-            <h3>Base64 Encode/Decode</h3>
-            <textarea id="base64Input" placeholder="Enter text to encode or Base64 to decode..."></textarea>
-            <button onclick="base64Encode()" data-tooltip="Convert text to Base64">Encode</button>
-            <button onclick="base64Decode()" data-tooltip="Convert Base64 to text">Decode</button>
+            <h3 data-i18n="encode.base64">Base64 Encode/Decode</h3>
+            <textarea id="base64Input" placeholder="Enter text to encode or Base64 to decode..." data-i18n-placeholder="encode.base64Placeholder"></textarea>
+            <button onclick="base64Encode()" data-tooltip="Convert text to Base64" data-i18n="encode.encode">Encode</button>
+            <button onclick="base64Decode()" data-tooltip="Convert Base64 to text" data-i18n="encode.decode">Decode</button>
             <div id="base64Output" class="output">
                 <span id="base64Text"></span>
-                <button class="copy-btn" onclick="copyToClipboard('base64Text')" data-tooltip="Copy to clipboard">Copy</button>
+                <button class="copy-btn" onclick="copyToClipboard('base64Text')" data-tooltip="Copy to clipboard" data-i18n="text.copy">Copy</button>
             </div>
-            <p class="tool-description">
+            <div id="base64Error" class="error-message hidden"></div>
+            <p class="tool-description" data-i18n="encode.base64Desc">
                 Base64 encoding converts binary data to ASCII characters. Commonly used for data URLs and basic obfuscation.
             </p>
         </div>
 
         <div class="tool">
-            <h3>URL Encoder/Decoder</h3>
-            <textarea id="urlInput" placeholder="Enter URL to encode or decode..."></textarea>
-            <button onclick="urlEncode()" data-tooltip="Encode special URL characters">Encode</button>
-            <button onclick="urlDecode()" data-tooltip="Decode URL characters">Decode</button>
+            <h3 data-i18n="encode.url">URL Encoder/Decoder</h3>
+            <textarea id="urlInput" placeholder="Enter URL to encode or decode..." data-i18n-placeholder="encode.urlPlaceholder"></textarea>
+            <button onclick="urlEncode()" data-tooltip="Encode special URL characters" data-i18n="encode.encode">Encode</button>
+            <button onclick="urlDecode()" data-tooltip="Decode URL characters" data-i18n="encode.decode">Decode</button>
             <div id="urlOutput" class="output">
                 <span id="urlText"></span>
-                <button class="copy-btn" onclick="copyToClipboard('urlText')" data-tooltip="Copy to clipboard">Copy</button>
+                <button class="copy-btn" onclick="copyToClipboard('urlText')" data-tooltip="Copy to clipboard" data-i18n="text.copy">Copy</button>
             </div>
-            <p class="tool-description">
+            <div id="urlError" class="error-message hidden"></div>
+            <p class="tool-description" data-i18n="encode.urlDesc">
                 URL encoding converts special characters to percent-encoded format. Essential for web development when passing parameters.
             </p>
         </div>
 
         <div class="tool">
-            <h3>Color Picker (HEX/RGB)</h3>
+            <h3 data-i18n="encode.colorPicker">Color Picker (HEX/RGB)</h3>
             <div class="color-picker-container">
                 <input type="color" id="colorPicker" value="#4a6ee0">
                 <span class="color-preview" id="colorPreview" style="background-color: #4a6ee0;"></span>
@@ -546,14 +613,14 @@
             <div class="output" style="margin-top: 15px;">
                 <div>
                     <strong>HEX:</strong> <span id="hexValue">#4a6ee0</span>
-                    <button class="copy-btn" onclick="copyToClipboard('hexValue')" data-tooltip="Copy HEX">Copy</button>
+                    <button class="copy-btn" onclick="copyToClipboard('hexValue')" data-tooltip="Copy HEX" data-i18n="text.copy">Copy</button>
                 </div>
                 <div style="margin-top: 10px;">
                     <strong>RGB:</strong> <span id="rgbValue">rgb(74, 110, 224)</span>
-                    <button class="copy-btn" onclick="copyToClipboard('rgbValue')" data-tooltip="Copy RGB">Copy</button>
+                    <button class="copy-btn" onclick="copyToClipboard('rgbValue')" data-tooltip="Copy RGB" data-i18n="text.copy">Copy</button>
                 </div>
             </div>
-            <p class="tool-description">
+            <p class="tool-description" data-i18n="encode.colorPickerDesc">
                 Pick colors and convert between HEX and RGB formats. Useful for web design and development.
             </p>
         </div>
@@ -561,59 +628,60 @@
 
     <div id="qr-generator" class="tab-content">
         <div class="tool">
-            <h3>QR Code Generator</h3>
-            <input type="text" id="qrText" placeholder="Enter text or URL...">
+            <h3 data-i18n="qr.generator">QR Code Generator</h3>
+            <input type="text" id="qrText" placeholder="Enter text or URL..." data-i18n-placeholder="qr.enterText">
+            <div id="qrUrlError" class="error-message hidden" data-i18n="qr.invalidUrl">Please enter a valid URL (e.g., https://example.com)</div>
             
             <div class="options-container">
                 <div class="option-group">
-                    <label for="qrColor">QR Color:</label>
+                    <label for="qrColor" data-i18n="qr.color">QR Color:</label>
                     <div class="color-picker-container">
                         <input type="color" id="qrColor" value="#000000">
                         <span class="color-preview" id="qrColorPreview" style="background-color: #000000;"></span>
                     </div>
                 </div>
                 <div class="option-group">
-                    <label for="qrBgColor">Background:</label>
+                    <label for="qrBgColor" data-i18n="qr.background">Background:</label>
                     <div class="color-picker-container">
                         <input type="color" id="qrBgColor" value="#ffffff">
                         <span class="color-preview" id="qrBgColorPreview" style="background-color: #ffffff;"></span>
                     </div>
                 </div>
                 <div class="option-group">
-                    <label for="qrErrorCorrection">Error Correction:</label>
+                    <label for="qrErrorCorrection" data-i18n="qr.errorCorrection">Error Correction:</label>
                     <select id="qrErrorCorrection">
-                        <option value="L">Low (7%)</option>
-                        <option value="M">Medium (15%)</option>
-                        <option value="Q">Quartile (25%)</option>
-                        <option value="H" selected>High (30%)</option>
+                        <option value="L" data-i18n="qr.low">Low (7%)</option>
+                        <option value="M" data-i18n="qr.medium">Medium (15%)</option>
+                        <option value="Q" data-i18n="qr.quartile">Quartile (25%)</option>
+                        <option value="H" selected data-i18n="qr.high">High (30%)</option>
                     </select>
                 </div>
             </div>
 
             <div class="option-group">
-                <label for="qrBorderStyle">Border Style:</label>
+                <label for="qrBorderStyle" data-i18n="qr.borderStyle">Border Style:</label>
                 <select id="qrBorderStyle">
-                    <option value="none">No Border</option>
-                    <option value="solid" selected>Solid Border</option>
-                    <option value="dashed">Dashed Border</option>
-                    <option value="dotted">Dotted Border</option>
+                    <option value="none" data-i18n="qr.noBorder">No Border</option>
+                    <option value="solid" selected data-i18n="qr.solidBorder">Solid Border</option>
+                    <option value="dashed" data-i18n="qr.dashedBorder">Dashed Border</option>
+                    <option value="dotted" data-i18n="qr.dottedBorder">Dotted Border</option>
                 </select>
             </div>
 
             <div class="option-group">
-                <label for="qrBorderText">Border Text (optional):</label>
-                <input type="text" id="qrBorderText" placeholder="Enter text to display below QR code">
+                <label for="qrBorderText" data-i18n="qr.borderText">Border Text (optional):</label>
+                <input type="text" id="qrBorderText" placeholder="Enter text to display below QR code" data-i18n-placeholder="qr.borderTextPlaceholder">
             </div>
             
-            <button onclick="generateQR()" data-tooltip="Generate QR code from text">Generate QR Code</button>
-            <button onclick="clearQR()" class="clear-btn" data-tooltip="Clear QR code">Clear</button>
-            <button onclick="downloadQR()" id="downloadBtn" disabled data-tooltip="Download as PNG">Download QR Code</button>
+            <button onclick="generateQR()" data-tooltip="Generate QR code from text" data-i18n="qr.generate">Generate QR Code</button>
+            <button onclick="clearQR()" class="clear-btn" data-tooltip="Clear QR code" data-i18n="qr.clear">Clear</button>
+            <button onclick="downloadQR()" id="downloadBtn" disabled data-tooltip="Download as PNG" data-i18n="qr.download">Download QR Code</button>
             
             <div id="qrCode" class="output">
                 <div class="loader" id="qrLoader"></div>
-                <span id="qrPlaceholder">QR Code will appear here</span>
+                <span id="qrPlaceholder" data-i18n="qr.placeholder">QR Code will appear here</span>
             </div>
-            <p class="tool-description">
+            <p class="tool-description" data-i18n="qr.description">
                 Create scannable QR codes for URLs, contact information, or any text. Works offline.
             </p>
         </div>
@@ -621,64 +689,64 @@
 
     <div id="wifi-qr-generator" class="tab-content">
         <div class="tool">
-            <h3>WiFi QR Code Generator</h3>
+            <h3 data-i18n="wifi.generator">WiFi QR Code Generator</h3>
             <div class="options-container">
                 <div class="option-group">
-                    <label for="wifiSsid">Network Name (SSID):</label>
-                    <input type="text" id="wifiSsid" placeholder="Enter your WiFi network name">
+                    <label for="wifiSsid" data-i18n="wifi.ssid">Network Name (SSID):</label>
+                    <input type="text" id="wifiSsid" placeholder="Enter your WiFi network name" data-i18n-placeholder="wifi.ssidPlaceholder">
                 </div>
                 <div class="option-group">
-                    <label for="wifiEncryption">Encryption Type:</label>
+                    <label for="wifiEncryption" data-i18n="wifi.encryption">Encryption Type:</label>
                     <select id="wifiEncryption">
-                        <option value="WPA">WPA/WPA2</option>
-                        <option value="WEP">WEP</option>
-                        <option value="">None (Open)</option>
+                        <option value="WPA" data-i18n="wifi.wpa">WPA/WPA2</option>
+                        <option value="WEP" data-i18n="wifi.wep">WEP</option>
+                        <option value="" data-i18n="wifi.none">None (Open)</option>
                     </select>
                 </div>
                 <div class="option-group">
-                    <label for="wifiPassword">Password:</label>
-                    <input type="text" id="wifiPassword" placeholder="Enter WiFi password (leave empty for open networks)">
+                    <label for="wifiPassword" data-i18n="wifi.password">Password:</label>
+                    <input type="text" id="wifiPassword" placeholder="Enter WiFi password (leave empty for open networks)" data-i18n-placeholder="wifi.passwordPlaceholder">
                 </div>
                 <div class="option-group">
-                    <label><input type="checkbox" id="wifiHidden"> Hidden network</label>
+                    <label><input type="checkbox" id="wifiHidden"> <span data-i18n="wifi.hidden">Hidden network</span></label>
                 </div>
             </div>
 
             <div class="options-container">
                 <div class="option-group">
-                    <label for="wifiQrColor">QR Color:</label>
+                    <label for="wifiQrColor" data-i18n="qr.color">QR Color:</label>
                     <div class="color-picker-container">
                         <input type="color" id="wifiQrColor" value="#000000">
                         <span class="color-preview" id="wifiQrColorPreview" style="background-color: #000000;"></span>
                     </div>
                 </div>
                 <div class="option-group">
-                    <label for="wifiQrBgColor">Background:</label>
+                    <label for="wifiQrBgColor" data-i18n="qr.background">Background:</label>
                     <div class="color-picker-container">
                         <input type="color" id="wifiQrBgColor" value="#ffffff">
                         <span class="color-preview" id="wifiQrBgColorPreview" style="background-color: #ffffff;"></span>
                     </div>
                 </div>
                 <div class="option-group">
-                    <label for="wifiQrErrorCorrection">Error Correction:</label>
+                    <label for="wifiQrErrorCorrection" data-i18n="qr.errorCorrection">Error Correction:</label>
                     <select id="wifiQrErrorCorrection">
-                        <option value="L">Low (7%)</option>
-                        <option value="M">Medium (15%)</option>
-                        <option value="Q">Quartile (25%)</option>
-                        <option value="H" selected>High (30%)</option>
+                        <option value="L" data-i18n="qr.low">Low (7%)</option>
+                        <option value="M" data-i18n="qr.medium">Medium (15%)</option>
+                        <option value="Q" data-i18n="qr.quartile">Quartile (25%)</option>
+                        <option value="H" selected data-i18n="qr.high">High (30%)</option>
                     </select>
                 </div>
             </div>
 
-            <button onclick="generateWifiQR()" data-tooltip="Generate WiFi QR code">Generate WiFi QR</button>
-            <button onclick="clearWifiQR()" class="clear-btn" data-tooltip="Clear QR code">Clear</button>
-            <button onclick="downloadWifiQR()" id="downloadWifiBtn" disabled data-tooltip="Download as PNG">Download QR Code</button>
+            <button onclick="generateWifiQR()" data-tooltip="Generate WiFi QR code" data-i18n="wifi.generate">Generate WiFi QR</button>
+            <button onclick="clearWifiQR()" class="clear-btn" data-tooltip="Clear QR code" data-i18n="qr.clear">Clear</button>
+            <button onclick="downloadWifiQR()" id="downloadWifiBtn" disabled data-tooltip="Download as PNG" data-i18n="qr.download">Download QR Code</button>
             
             <div id="wifiQrCode" class="output">
                 <div class="loader" id="wifiQrLoader"></div>
-                <span id="wifiQrPlaceholder">WiFi QR Code will appear here</span>
+                <span id="wifiQrPlaceholder" data-i18n="wifi.placeholder">WiFi QR Code will appear here</span>
             </div>
-            <p class="tool-description">
+            <p class="tool-description" data-i18n="wifi.description">
                 Create scannable QR codes for WiFi networks. Users can scan to connect automatically.
             </p>
         </div>
@@ -686,12 +754,12 @@
 
     <div id="lorem-ipsum" class="tab-content">
         <div class="tool">
-            <h3>Lorem Ipsum Generator</h3>
-            <button onclick="generateLoremIpsum(1)" data-tooltip="Generate 1 paragraph">1 Paragraph</button>
-            <button onclick="generateLoremIpsum(3)" data-tooltip="Generate 3 paragraphs">3 Paragraphs</button>
-            <button onclick="generateLoremIpsum(5)" data-tooltip="Generate 5 paragraphs">5 Paragraphs</button>
+            <h3 data-i18n="lorem.generator">Lorem Ipsum Generator</h3>
+            <button onclick="generateLoremIpsum(1)" data-tooltip="Generate 1 paragraph" data-i18n="lorem.one">1 Paragraph</button>
+            <button onclick="generateLoremIpsum(3)" data-tooltip="Generate 3 paragraphs" data-i18n="lorem.three">3 Paragraphs</button>
+            <button onclick="generateLoremIpsum(5)" data-tooltip="Generate 5 paragraphs" data-i18n="lorem.five">5 Paragraphs</button>
             <div id="loremOutput" class="output"></div>
-            <p class="tool-description">
+            <p class="tool-description" data-i18n="lorem.description">
                 Generate placeholder text for design mockups and document layouts. Standard "Lorem ipsum" dummy text.
             </p>
         </div>
@@ -699,40 +767,61 @@
 
     <div id="dev-tools" class="tab-content">
         <div class="tool">
-            <h3>JSON Formatter</h3>
-            <textarea id="jsonInput" placeholder="Paste your JSON here..." rows="8"></textarea>
+            <h3 data-i18n="dev.jsonFormatter">JSON Formatter</h3>
+            <textarea id="jsonInput" placeholder="Paste your JSON here..." rows="8" data-i18n-placeholder="dev.jsonPlaceholder"></textarea>
             <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <button onclick="formatJson()" data-tooltip="Format and validate JSON">Format JSON</button>
-                <button onclick="minifyJson()" data-tooltip="Minify JSON">Minify</button>
-                <button onclick="validateJson()" data-tooltip="Validate JSON syntax">Validate</button>
-                <button onclick="clearJson()" class="clear-btn" data-tooltip="Clear JSON">Clear</button>
+                <button onclick="formatJson()" data-tooltip="Format and validate JSON" data-i18n="dev.format">Format JSON</button>
+                <button onclick="minifyJson()" data-tooltip="Minify JSON" data-i18n="dev.minify">Minify</button>
+                <button onclick="validateJson()" data-tooltip="Validate JSON syntax" data-i18n="dev.validate">Validate</button>
+                <button onclick="clearJson()" class="clear-btn" data-tooltip="Clear JSON" data-i18n="dev.clear">Clear</button>
             </div>
             <div id="jsonOutput" class="output" style="min-height: 100px;"></div>
-            <p class="tool-description">
+            <p class="tool-description" data-i18n="dev.jsonFormatterDesc">
                 Format, validate and minify JSON data with proper indentation. Essential for developers working with APIs.
             </p>
         </div>
 
         <div class="tool">
-            <h3>Markdown Preview</h3>
+            <h3 data-i18n="dev.markdownPreview">Markdown Preview</h3>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div>
-                    <textarea id="markdownInput" placeholder="Write your Markdown here..." rows="12"></textarea>
-                    <button onclick="updateMarkdownPreview()" style="margin-top: 10px;">Update Preview</button>
+                    <textarea id="markdownInput" placeholder="Write your Markdown here..." rows="12" data-i18n-placeholder="dev.markdownPlaceholder"></textarea>
+                    <button onclick="updateMarkdownPreview()" style="margin-top: 10px;" data-i18n="dev.updatePreview">Update Preview</button>
                 </div>
                 <div>
-                    <h4 style="margin-top: 0;">Preview:</h4>
+                    <h4 style="margin-top: 0;" data-i18n="dev.preview">Preview:</h4>
                     <div id="markdownPreview"></div>
                 </div>
             </div>
-            <p class="tool-description">
+            <p class="tool-description" data-i18n="dev.markdownPreviewDesc">
                 Preview Markdown formatting in real-time. Supports headings, lists, links, and other common Markdown syntax.
             </p>
         </div>
     </div>
 
+    <!-- Cookie Banner -->
+    <div id="cookie-banner">
+        <p data-i18n="cookie.message">We use only essential cookies. By using our site, you agree to our 
+           <a href="privacy-policy.html" data-i18n="nav.privacy">Privacy Policy</a>.</p>
+        <button id="accept-cookies" data-i18n="cookie.accept">Accept</button>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="legal-links">
+                <a href="privacy-policy.html" data-i18n="nav.privacy">Privacy Policy</a>
+                <a href="terms-of-use.html" data-i18n="nav.terms">Terms of Use</a>
+                <a href="about.html" data-i18n="nav.about">About</a>
+            </div>
+            <p class="copyright">
+                © <span id="year"></span> Super Tools 247. <span data-i18n="footer.rights">All rights reserved.</span><br>
+                <span data-i18n="footer.noTracking">All tools process data locally in your browser. No tracking.</span>
+            </p>
+        </div>
+    </footer>
+
     <script>
-        // Initialize theme
+        // Initialize theme with OS preference
         function initTheme() {
             const savedTheme = localStorage.getItem("theme");
             const osPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -740,6 +829,15 @@
             document.documentElement.setAttribute("data-theme", defaultTheme);
         }
         initTheme();
+
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute("data-theme");
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+            html.setAttribute("data-theme", newTheme);
+            localStorage.setItem("theme", newTheme);
+        }
 
         // Tab Navigation
         function openTab(tabId) {
@@ -751,6 +849,26 @@
             });
             document.getElementById(tabId).classList.add('active');
             event.currentTarget.classList.add('active');
+            
+            // Lazy load QRCode.js when QR tab is opened
+            if ((tabId === 'qr-generator' || tabId === 'wifi-qr-generator') && !window.QRCode) {
+                loadQRCodeLibrary();
+            }
+        }
+
+        // Lazy load QRCode.js
+        function loadQRCodeLibrary() {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+            script.onload = function() {
+                console.log('QRCode.js loaded');
+            };
+            script.onerror = function() {
+                console.error('Failed to load QRCode.js');
+                document.getElementById('qrPlaceholder').textContent = 'Failed to load QR code generator. Please check your internet connection.';
+                document.getElementById('wifiQrPlaceholder').textContent = 'Failed to load QR code generator. Please check your internet connection.';
+            };
+            document.head.appendChild(script);
         }
 
         // Word/Character Counter
@@ -785,7 +903,7 @@
             if (useSymbols) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
             
             if (!chars) {
-                alert('Please select at least one character type!');
+                alert(getTranslation('text.noCharTypes'));
                 return;
             }
             
@@ -808,43 +926,86 @@
                 const successful = document.execCommand('copy');
                 const btn = event.target;
                 if (successful) {
-                    btn.textContent = "Copied!";
+                    btn.textContent = getTranslation('text.copied');
                     setTimeout(() => {
-                        btn.textContent = "Copy";
+                        btn.textContent = getTranslation('text.copy');
                     }, 2000);
                 } else {
-                    alert("Copy failed. Please try again or use Ctrl+C");
+                    alert(getTranslation('text.copyFailed'));
                 }
             } catch (err) {
-                alert("Error copying text. Please use Ctrl+C");
+                alert(getTranslation('text.copyError'));
                 console.error("Copy failed:", err);
             }
             
             document.body.removeChild(textarea);
         }
 
-        // Base64 Tools
+        // Base64 Tools with better error handling
         function base64Encode() {
             const text = document.getElementById('base64Input').value;
-            document.getElementById('base64Text').textContent = btoa(encodeURIComponent(text));
-        }
-        function base64Decode() {
-            const text = document.getElementById('base64Input').value;
+            if (!text) {
+                showError('base64Error', 'encode.emptyInput');
+                return;
+            }
             try {
-                document.getElementById('base64Text').textContent = decodeURIComponent(atob(text));
-            } catch {
-                document.getElementById('base64Text').textContent = "Invalid Base64!";
+                document.getElementById('base64Text').textContent = btoa(encodeURIComponent(text));
+                hideError('base64Error');
+            } catch (e) {
+                showError('base64Error', 'encode.encodeError');
             }
         }
 
-        // URL Tools
+        function base64Decode() {
+            const text = document.getElementById('base64Input').value;
+            if (!text) {
+                showError('base64Error', 'encode.emptyInput');
+                return;
+            }
+            try {
+                document.getElementById('base64Text').textContent = decodeURIComponent(atob(text));
+                hideError('base64Error');
+            } catch (e) {
+                showError('base64Error', 'encode.invalidBase64');
+            }
+        }
+
+        // URL Tools with better error handling
         function urlEncode() {
             const text = document.getElementById('urlInput').value;
+            if (!text) {
+                showError('urlError', 'encode.emptyInput');
+                return;
+            }
             document.getElementById('urlText').textContent = encodeURIComponent(text);
+            hideError('urlError');
         }
+
         function urlDecode() {
             const text = document.getElementById('urlInput').value;
-            document.getElementById('urlText').textContent = decodeURIComponent(text);
+            if (!text) {
+                showError('urlError', 'encode.emptyInput');
+                return;
+            }
+            try {
+                document.getElementById('urlText').textContent = decodeURIComponent(text);
+                hideError('urlError');
+            } catch (e) {
+                showError('urlError', 'encode.invalidUrlEncoding');
+            }
+        }
+
+        // Error handling helpers
+        function showError(elementId, translationKey) {
+            const element = document.getElementById(elementId);
+            element.textContent = getTranslation(translationKey);
+            element.classList.remove('hidden');
+        }
+
+        function hideError(elementId) {
+            const element = document.getElementById(elementId);
+            element.textContent = '';
+            element.classList.add('hidden');
         }
 
         // Color Picker
@@ -871,9 +1032,22 @@
             const downloadBtn = document.getElementById('downloadBtn');
             
             if (!text) {
-                placeholder.textContent = "Please enter text first!";
+                placeholder.textContent = getTranslation('qr.emptyInput');
                 downloadBtn.disabled = true;
                 return;
+            }
+
+            // Validate URL if it looks like one
+            if (text.startsWith('http://') || text.startsWith('https://')) {
+                try {
+                    new URL(text);
+                    hideError('qrUrlError');
+                } catch (e) {
+                    showError('qrUrlError', 'qr.invalidUrl');
+                    return;
+                }
+            } else {
+                hideError('qrUrlError');
             }
 
             // Clear previous QR code completely
@@ -940,7 +1114,7 @@
                     qrDiv.appendChild(container);
                     downloadBtn.disabled = false;
                 } catch (e) {
-                    qrDiv.innerHTML = '<span id="qrPlaceholder">Error generating QR</span>';
+                    qrDiv.innerHTML = `<span id="qrPlaceholder">${getTranslation('qr.generationError')}</span>`;
                     console.error("QR Error:", e);
                 }
             }, 100);
@@ -953,7 +1127,7 @@
             const wifiDownloadBtn = document.getElementById('downloadWifiBtn');
             
             if (!ssid) {
-                wifiPlaceholder.textContent = "Please enter WiFi network name!";
+                wifiPlaceholder.textContent = getTranslation('wifi.emptySsid');
                 wifiDownloadBtn.disabled = true;
                 return;
             }
@@ -1003,7 +1177,7 @@
                     
                     wifiDownloadBtn.disabled = false;
                 } catch (e) {
-                    wifiQrDiv.innerHTML = '<span id="wifiQrPlaceholder">Error generating QR</span>';
+                    wifiQrDiv.innerHTML = `<span id="wifiQrPlaceholder">${getTranslation('qr.generationError')}</span>`;
                     console.error("WiFi QR Error:", e);
                 }
             }, 100);
@@ -1018,9 +1192,10 @@
                 qrCodeInstance = null;
             }
             
-            qrDiv.innerHTML = '<span id="qrPlaceholder">QR Code will appear here</span>';
+            qrDiv.innerHTML = `<span id="qrPlaceholder">${getTranslation('qr.placeholder')}</span>`;
             document.getElementById('qrText').value = '';
             downloadBtn.disabled = true;
+            hideError('qrUrlError');
         }
 
         function clearWifiQR() {
@@ -1032,7 +1207,7 @@
                 wifiQrCodeInstance = null;
             }
             
-            wifiQrDiv.innerHTML = '<span id="wifiQrPlaceholder">WiFi QR Code will appear here</span>';
+            wifiQrDiv.innerHTML = `<span id="wifiQrPlaceholder">${getTranslation('wifi.placeholder')}</span>`;
             document.getElementById('wifiSsid').value = '';
             document.getElementById('wifiPassword').value = '';
             wifiDownloadBtn.disabled = true;
@@ -1125,30 +1300,42 @@
         function formatJson() {
             try {
                 const jsonInput = document.getElementById('jsonInput').value;
+                if (!jsonInput.trim()) {
+                    document.getElementById('jsonOutput').innerHTML = `<span style="color:red">${getTranslation('dev.emptyJson')}</span>`;
+                    return;
+                }
                 const jsonObj = JSON.parse(jsonInput);
                 document.getElementById('jsonOutput').innerHTML = `<pre>${JSON.stringify(jsonObj, null, 2)}</pre>`;
             } catch (e) {
-                document.getElementById('jsonOutput').innerHTML = `<span style="color:red">Invalid JSON: ${e.message}</span>`;
+                document.getElementById('jsonOutput').innerHTML = `<span style="color:red">${getTranslation('dev.invalidJson')}: ${e.message}</span>`;
             }
         }
 
         function minifyJson() {
             try {
                 const jsonInput = document.getElementById('jsonInput').value;
+                if (!jsonInput.trim()) {
+                    document.getElementById('jsonOutput').innerHTML = `<span style="color:red">${getTranslation('dev.emptyJson')}</span>`;
+                    return;
+                }
                 const jsonObj = JSON.parse(jsonInput);
                 document.getElementById('jsonOutput').innerHTML = `<pre>${JSON.stringify(jsonObj)}</pre>`;
             } catch (e) {
-                document.getElementById('jsonOutput').innerHTML = `<span style="color:red">Invalid JSON: ${e.message}</span>`;
+                document.getElementById('jsonOutput').innerHTML = `<span style="color:red">${getTranslation('dev.invalidJson')}: ${e.message}</span>`;
             }
         }
 
         function validateJson() {
             try {
                 const jsonInput = document.getElementById('jsonInput').value;
+                if (!jsonInput.trim()) {
+                    document.getElementById('jsonOutput').innerHTML = `<span style="color:red">${getTranslation('dev.emptyJson')}</span>`;
+                    return;
+                }
                 JSON.parse(jsonInput);
-                document.getElementById('jsonOutput').innerHTML = '<span style="color:green">✓ Valid JSON</span>';
+                document.getElementById('jsonOutput').innerHTML = `<span style="color:green">✓ ${getTranslation('dev.validJson')}</span>`;
             } catch (e) {
-                document.getElementById('jsonOutput').innerHTML = `<span style="color:red">Invalid JSON: ${e.message}</span>`;
+                document.getElementById('jsonOutput').innerHTML = `<span style="color:red">${getTranslation('dev.invalidJson')}: ${e.message}</span>`;
             }
         }
 
@@ -1197,62 +1384,511 @@
             document.getElementById('markdownPreview').innerHTML = '<p>' + html + '</p>';
         }
 
-// Theme Toggle
-// Keep your working toggleTheme() version
-function toggleTheme() {
-    const html = document.documentElement;
-    const currentTheme = html.getAttribute("data-theme");
-    const newTheme = currentTheme === "dark" ? "light" : "dark";
-    html.setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
-    
-    // Only update UI colors without regenerating QR codes
-    updateColorPreviews(); // Add this helper if needed
-}
-
-// Optional helper to update color previews
-function updateColorPreviews() {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    document.documentElement.style.setProperty('--qr-color', isDark ? '#ffffff' : '#000000');
-    document.documentElement.style.setProperty('--qr-bg-color', isDark ? '#1a1a1a' : '#ffffff');
-}
-
-    </script>
-
-    <!-- Cookie Banner -->
-    <div id="cookie-banner" class="hidden">
-        <p>We use only essential cookies. By using our site, you agree to our 
-           <a href="privacy-policy.html">Privacy Policy</a>.</p>
-        <button id="accept-cookies">Accept</button>
-    </div>
-
-    <script>
-        if (!localStorage.getItem('cookiesAccepted')) {
-            document.getElementById('cookie-banner').classList.remove('hidden');
+        // Lorem Ipsum Generator
+        function generateLoremIpsum(paragraphs) {
+            const lorem = [
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.",
+                "Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec euismod, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.",
+                "Sed euismod, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.",
+                "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.",
+                "Cras ultricies ligula sed magna dictum porta. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl."
+            ];
+            
+            let output = '';
+            for (let i = 0; i < paragraphs; i++) {
+                output += `<p>${lorem[i % lorem.length]}</p>`;
+            }
+            document.getElementById('loremOutput').innerHTML = output;
         }
-        
-        document.getElementById('accept-cookies').addEventListener('click', function() {
-            localStorage.setItem('cookiesAccepted', 'true');
-            document.getElementById('cookie-banner').classList.add('hidden');
+
+        // Language support
+        const translations = {
+            en: {
+                nav: {
+                    home: "Home",
+                    about: "About",
+                    privacy: "Privacy",
+                    terms: "Terms"
+                },
+                subtitle: "All-in-one utilities for developers, writers, and more!",
+                tabs: {
+                    text: "📝 Text Tools",
+                    encode: "🔗 Encode/Decode",
+                    qr: "🔳 QR Generator",
+                    wifi: "📶 WiFi QR Generator",
+                    lorem: "✒️ Lorem Ipsum",
+                    dev: "💻 Dev Tools"
+                },
+                text: {
+                    wordCounter: "Word & Character Counter",
+                    typeHere: "Type or paste text here...",
+                    words: "Words",
+                    chars: "Characters",
+                    wordCounterDesc: "Counts words and characters in your text. Useful for writers, students, and social media posts with character limits.",
+                    caseConverter: "Case Converter",
+                    typeToConvert: "Type text to convert...",
+                    uppercase: "UPPERCASE",
+                    lowercase: "lowercase",
+                    caseConverterDesc: "Convert text between uppercase and lowercase. Helpful for formatting titles, headings, or normalizing text.",
+                    passwordGenerator: "Random Password Generator",
+                    passwordLength: "Password Length:",
+                    uppercaseLetters: "Uppercase (A-Z)",
+                    lowercaseLetters: "Lowercase (a-z)",
+                    numbers: "Numbers (0-9)",
+                    symbols: "Symbols (!@#$)",
+                    generatePassword: "Generate Password",
+                    copy: "Copy",
+                    copied: "Copied!",
+                    copyFailed: "Copy failed. Please try again or use Ctrl+C",
+                    copyError: "Error copying text. Please use Ctrl+C",
+                    passwordGeneratorDesc: "Create strong passwords with customizable length and character sets.",
+                    noCharTypes: "Please select at least one character type!"
+                },
+                encode: {
+                    base64: "Base64 Encode/Decode",
+                    base64Placeholder: "Enter text to encode or Base64 to decode...",
+                    encode: "Encode",
+                    decode: "Decode",
+                    base64Desc: "Base64 encoding converts binary data to ASCII characters. Commonly used for data URLs and basic obfuscation.",
+                    url: "URL Encoder/Decoder",
+                    urlPlaceholder: "Enter URL to encode or decode...",
+                    urlDesc: "URL encoding converts special characters to percent-encoded format. Essential for web development when passing parameters.",
+                    colorPicker: "Color Picker (HEX/RGB)",
+                    colorPickerDesc: "Pick colors and convert between HEX and RGB formats. Useful for web design and development.",
+                    emptyInput: "Please enter some text first!",
+                    encodeError: "Error encoding text!",
+                    invalidBase64: "Invalid Base64 input!",
+                    invalidUrlEncoding: "Invalid URL encoding!"
+                },
+                qr: {
+                    generator: "QR Code Generator",
+                    enterText: "Enter text or URL...",
+                    color: "QR Color",
+                    background: "Background",
+                    errorCorrection: "Error Correction",
+                    low: "Low (7%)",
+                    medium: "Medium (15%)",
+                    quartile: "Quartile (25%)",
+                    high: "High (30%)",
+                    borderStyle: "Border Style",
+                    noBorder: "No Border",
+                    solidBorder: "Solid Border",
+                    dashedBorder: "Dashed Border",
+                    dottedBorder: "Dotted Border",
+                    borderText: "Border Text (optional)",
+                    borderTextPlaceholder: "Enter text to display below QR code",
+                    generate: "Generate QR Code",
+                    clear: "Clear",
+                    download: "Download QR Code",
+                    placeholder: "QR Code will appear here",
+                    description: "Create scannable QR codes for URLs, contact information, or any text. Works offline.",
+                    emptyInput: "Please enter text first!",
+                    invalidUrl: "Please enter a valid URL (e.g., https://example.com)",
+                    generationError: "Error generating QR code"
+                },
+                wifi: {
+                    generator: "WiFi QR Code Generator",
+                    ssid: "Network Name (SSID)",
+                    ssidPlaceholder: "Enter your WiFi network name",
+                    encryption: "Encryption Type",
+                    wpa: "WPA/WPA2",
+                    wep: "WEP",
+                    none: "None (Open)",
+                    password: "Password",
+                    passwordPlaceholder: "Enter WiFi password (leave empty for open networks)",
+                    hidden: "Hidden network",
+                    generate: "Generate WiFi QR",
+                    placeholder: "WiFi QR Code will appear here",
+                    description: "Create scannable QR codes for WiFi networks. Users can scan to connect automatically.",
+                    emptySsid: "Please enter WiFi network name!"
+                },
+                lorem: {
+                    generator: "Lorem Ipsum Generator",
+                    one: "1 Paragraph",
+                    three: "3 Paragraphs",
+                    five: "5 Paragraphs",
+                    description: "Generate placeholder text for design mockups and document layouts. Standard \"Lorem ipsum\" dummy text."
+                },
+                dev: {
+                    jsonFormatter: "JSON Formatter",
+                    jsonPlaceholder: "Paste your JSON here...",
+                    format: "Format JSON",
+                    minify: "Minify",
+                    validate: "Validate",
+                    clear: "Clear",
+                    jsonFormatterDesc: "Format, validate and minify JSON data with proper indentation. Essential for developers working with APIs.",
+                    markdownPreview: "Markdown Preview",
+                    markdownPlaceholder: "Write your Markdown here...",
+                    updatePreview: "Update Preview",
+                    preview: "Preview:",
+                    markdownPreviewDesc: "Preview Markdown formatting in real-time. Supports headings, lists, links, and other common Markdown syntax.",
+                    emptyJson: "Please enter some JSON first!",
+                    validJson: "Valid JSON",
+                    invalidJson: "Invalid JSON"
+                },
+                cookie: {
+                    message: "We use only essential cookies. By using our site, you agree to our",
+                    accept: "Accept"
+                },
+                footer: {
+                    rights: "All rights reserved.",
+                    noTracking: "All tools process data locally in your browser. No tracking."
+                }
+            },
+            es: {
+                nav: {
+                    home: "Inicio",
+                    about: "Acerca de",
+                    privacy: "Privacidad",
+                    terms: "Términos"
+                },
+                subtitle: "¡Utilidades todo en uno para desarrolladores, escritores y más!",
+                tabs: {
+                    text: "📝 Herramientas de texto",
+                    encode: "🔗 Codificar/Decodificar",
+                    qr: "🔳 Generador QR",
+                    wifi: "📶 Generador WiFi QR",
+                    lorem: "✒️ Lorem Ipsum",
+                    dev: "💻 Herramientas Dev"
+                },
+                text: {
+                    wordCounter: "Contador de palabras y caracteres",
+                    typeHere: "Escribe o pega texto aquí...",
+                    words: "Palabras",
+                    chars: "Caracteres",
+                    wordCounterDesc: "Cuenta palabras y caracteres en tu texto. Útil para escritores, estudiantes y publicaciones en redes sociales con límites de caracteres.",
+                    caseConverter: "Convertidor de mayúsculas/minúsculas",
+                    typeToConvert: "Escribe texto para convertir...",
+                    uppercase: "MAYÚSCULAS",
+                    lowercase: "minúsculas",
+                    caseConverterDesc: "Convierte texto entre mayúsculas y minúsculas. Útil para formatear títulos, encabezados o normalizar texto.",
+                    passwordGenerator: "Generador de contraseñas",
+                    passwordLength: "Longitud de contraseña:",
+                    uppercaseLetters: "Mayúsculas (A-Z)",
+                    lowercaseLetters: "Minúsculas (a-z)",
+                    numbers: "Números (0-9)",
+                    symbols: "Símbolos (!@#$)",
+                    generatePassword: "Generar contraseña",
+                    copy: "Copiar",
+                    copied: "¡Copiado!",
+                    copyFailed: "Error al copiar. Intenta nuevamente o usa Ctrl+C",
+                    copyError: "Error al copiar texto. Usa Ctrl+C",
+                    passwordGeneratorDesc: "Crea contraseñas seguras con longitud personalizable y conjuntos de caracteres.",
+                    noCharTypes: "¡Selecciona al menos un tipo de carácter!"
+                },
+                encode: {
+                    base64: "Codificar/Decodificar Base64",
+                    base64Placeholder: "Ingresa texto para codificar o Base64 para decodificar...",
+                    encode: "Codificar",
+                    decode: "Decodificar",
+                    base64Desc: "La codificación Base64 convierte datos binarios en caracteres ASCII. Comúnmente utilizado para URLs de datos y ofuscación básica.",
+                    url: "Codificar/Decodificar URL",
+                    urlPlaceholder: "Ingresa URL para codificar o decodificar...",
+                    urlDesc: "La codificación URL convierte caracteres especiales a formato codificado. Esencial para desarrollo web al pasar parámetros.",
+                    colorPicker: "Selector de color (HEX/RGB)",
+                    colorPickerDesc: "Selecciona colores y convierte entre formatos HEX y RGB. Útil para diseño web y desarrollo.",
+                    emptyInput: "¡Ingresa algún texto primero!",
+                    encodeError: "¡Error al codificar texto!",
+                    invalidBase64: "¡Entrada Base64 inválida!",
+                    invalidUrlEncoding: "¡Codificación URL inválida!"
+                },
+                qr: {
+                    generator: "Generador de código QR",
+                    enterText: "Ingresa texto o URL...",
+                    color: "Color QR",
+                    background: "Fondo",
+                    errorCorrection: "Corrección de errores",
+                    low: "Baja (7%)",
+                    medium: "Media (15%)",
+                    quartile: "Cuartil (25%)",
+                    high: "Alta (30%)",
+                    borderStyle: "Estilo de borde",
+                    noBorder: "Sin borde",
+                    solidBorder: "Borde sólido",
+                    dashedBorder: "Borde discontinuo",
+                    dottedBorder: "Borde punteado",
+                    borderText: "Texto de borde (opcional)",
+                    borderTextPlaceholder: "Ingresa texto para mostrar debajo del QR",
+                    generate: "Generar código QR",
+                    clear: "Limpiar",
+                    download: "Descargar QR",
+                    placeholder: "El código QR aparecerá aquí",
+                    description: "Crea códigos QR escaneables para URLs, información de contacto o cualquier texto. Funciona sin conexión.",
+                    emptyInput: "¡Ingresa texto primero!",
+                    invalidUrl: "Ingresa una URL válida (ej. https://ejemplo.com)",
+                    generationError: "Error al generar código QR"
+                },
+                wifi: {
+                    generator: "Generador de WiFi QR",
+                    ssid: "Nombre de red (SSID)",
+                    ssidPlaceholder: "Ingresa el nombre de tu red WiFi",
+                    encryption: "Tipo de encriptación",
+                    wpa: "WPA/WPA2",
+                    wep: "WEP",
+                    none: "Ninguna (Abierta)",
+                    password: "Contraseña",
+                    passwordPlaceholder: "Ingresa contraseña WiFi (deja vacío para redes abiertas)",
+                    hidden: "Red oculta",
+                    generate: "Generar WiFi QR",
+                    placeholder: "El código WiFi QR aparecerá aquí",
+                    description: "Crea códigos QR escaneables para redes WiFi. Los usuarios pueden escanear para conectarse automáticamente.",
+                    emptySsid: "¡Ingresa el nombre de la red WiFi!"
+                },
+                lorem: {
+                    generator: "Generador Lorem Ipsum",
+                    one: "1 Párrafo",
+                    three: "3 Párrafos",
+                    five: "5 Párrafos",
+                    description: "Genera texto de relleno para maquetas de diseño y diseños de documentos. Texto ficticio estándar \"Lorem ipsum\"."
+                },
+                dev: {
+                    jsonFormatter: "Formateador JSON",
+                    jsonPlaceholder: "Pega tu JSON aquí...",
+                    format: "Formatear JSON",
+                    minify: "Minificar",
+                    validate: "Validar",
+                    clear: "Limpiar",
+                    jsonFormatterDesc: "Formatea, valida y minifica datos JSON con indentación adecuada. Esencial para desarrolladores que trabajan con APIs.",
+                    markdownPreview: "Vista previa Markdown",
+                    markdownPlaceholder: "Escribe tu Markdown aquí...",
+                    updatePreview: "Actualizar vista previa",
+                    preview: "Vista previa:",
+                    markdownPreviewDesc: "Vista previa del formato Markdown en tiempo real. Soporta encabezados, listas, enlaces y otra sintaxis común de Markdown.",
+                    emptyJson: "¡Ingresa algún JSON primero!",
+                    validJson: "JSON válido",
+                    invalidJson: "JSON inválido"
+                },
+                cookie: {
+                    message: "Usamos solo cookies esenciales. Al usar nuestro sitio, aceptas nuestra",
+                    accept: "Aceptar"
+                },
+                footer: {
+                    rights: "Todos los derechos reservados.",
+                    noTracking: "Todas las herramientas procesan datos localmente en tu navegador. Sin rastreo."
+                }
+            },
+            fr: {
+                nav: {
+                    home: "Accueil",
+                    about: "À propos",
+                    privacy: "Confidentialité",
+                    terms: "Conditions"
+                },
+                subtitle: "Utilitaires tout-en-un pour les développeurs, écrivains et plus encore !",
+                tabs: {
+                    text: "📝 Outils de texte",
+                    encode: "🔗 Encoder/Décoder",
+                    qr: "🔳 Générateur QR",
+                    wifi: "📶 Générateur WiFi QR",
+                    lorem: "✒️ Lorem Ipsum",
+                    dev: "💻 Outils Dev"
+                },
+                text: {
+                    wordCounter: "Compteur de mots et caractères",
+                    typeHere: "Tapez ou collez du texte ici...",
+                    words: "Mots",
+                    chars: "Caractères",
+                    wordCounterDesc: "Compte les mots et les caractères dans votre texte. Utile pour les écrivains, les étudiants et les publications sur les réseaux sociaux avec des limites de caractères.",
+                    caseConverter: "Convertisseur de casse",
+                    typeToConvert: "Tapez du texte à convertir...",
+                    uppercase: "MAJUSCULES",
+                    lowercase: "minuscules",
+                    caseConverterDesc: "Convertit le texte entre majuscules et minuscules. Utile pour formater les titres, les en-têtes ou normaliser le texte.",
+                    passwordGenerator: "Générateur de mot de passe",
+                    passwordLength: "Longueur du mot de passe :",
+                    uppercaseLetters: "Majuscules (A-Z)",
+                    lowercaseLetters: "Minuscules (a-z)",
+                    numbers: "Chiffres (0-9)",
+                    symbols: "Symboles (!@#$)",
+                    generatePassword: "Générer un mot de passe",
+                    copy: "Copier",
+                    copied: "Copié !",
+                    copyFailed: "Échec de la copie. Veuillez réessayer ou utiliser Ctrl+C",
+                    copyError: "Erreur lors de la copie du texte. Veuillez utiliser Ctrl+C",
+                    passwordGeneratorDesc: "Créez des mots de passe forts avec une longueur personnalisable et des ensembles de caractères.",
+                    noCharTypes: "Veuillez sélectionner au moins un type de caractère !"
+                },
+                encode: {
+                    base64: "Encoder/Décoder Base64",
+                    base64Placeholder: "Entrez du texte à encoder ou Base64 à décoder...",
+                    encode: "Encoder",
+                    decode: "Décoder",
+                    base64Desc: "L'encodage Base64 convertit les données binaires en caractères ASCII. Couramment utilisé pour les URL de données et l'obfuscation de base.",
+                    url: "Encoder/Décoder URL",
+                    urlPlaceholder: "Entrez une URL à encoder ou décoder...",
+                    urlDesc: "L'encodage URL convertit les caractères spéciaux en format codé en pourcentage. Essentiel pour le développement web lors du passage de paramètres.",
+                    colorPicker: "Sélecteur de couleur (HEX/RGB)",
+                    colorPickerDesc: "Choisissez des couleurs et convertissez entre les formats HEX et RGB. Utile pour la conception web et le développement.",
+                    emptyInput: "Veuillez d'abord entrer du texte !",
+                    encodeError: "Erreur lors de l'encodage du texte !",
+                    invalidBase64: "Entrée Base64 invalide !",
+                    invalidUrlEncoding: "Encodage URL invalide !"
+                },
+                qr: {
+                    generator: "Générateur de code QR",
+                    enterText: "Entrez du texte ou une URL...",
+                    color: "Couleur QR",
+                    background: "Arrière-plan",
+                    errorCorrection: "Correction d'erreur",
+                    low: "Faible (7%)",
+                    medium: "Moyenne (15%)",
+                    quartile: "Quartile (25%)",
+                    high: "Élevée (30%)",
+                    borderStyle: "Style de bordure",
+                    noBorder: "Pas de bordure",
+                    solidBorder: "Bordure pleine",
+                    dashedBorder: "Bordure pointillée",
+                    dottedBorder: "Bordure en pointillés",
+                    borderText: "Texte de bordure (optionnel)",
+                    borderTextPlaceholder: "Entrez du texte à afficher sous le QR",
+                    generate: "Générer un QR",
+                    clear: "Effacer",
+                    download: "Télécharger le QR",
+                    placeholder: "Le code QR apparaîtra ici",
+                    description: "Créez des codes QR scannables pour les URL, les informations de contact ou tout texte. Fonctionne hors ligne.",
+                    emptyInput: "Veuillez d'abord entrer du texte !",
+                    invalidUrl: "Veuillez entrer une URL valide (ex. https://exemple.com)",
+                    generationError: "Erreur lors de la génération du QR"
+                },
+                wifi: {
+                    generator: "Générateur WiFi QR",
+                    ssid: "Nom du réseau (SSID)",
+                    ssidPlaceholder: "Entrez le nom de votre réseau WiFi",
+                    encryption: "Type de chiffrement",
+                    wpa: "WPA/WPA2",
+                    wep: "WEP",
+                    none: "Aucun (Ouvert)",
+                    password: "Mot de passe",
+                    passwordPlaceholder: "Entrez le mot de passe WiFi (laissez vide pour les réseaux ouverts)",
+                    hidden: "Réseau masqué",
+                    generate: "Générer WiFi QR",
+                    placeholder: "Le code WiFi QR apparaîtra ici",
+                    description: "Créez des codes QR scannables pour les réseaux WiFi. Les utilisateurs peuvent scanner pour se connecter automatiquement.",
+                    emptySsid: "Veuillez entrer le nom du réseau WiFi !"
+                },
+                lorem: {
+                    generator: "Générateur Lorem Ipsum",
+                    one: "1 Paragraphe",
+                    three: "3 Paragraphes",
+                    five: "5 Paragraphes",
+                    description: "Générez du texte de remplissage pour les maquettes de conception et les mises en page de documents. Texte fictif standard \"Lorem ipsum\"."
+                },
+                dev: {
+                    jsonFormatter: "Formateur JSON",
+                    jsonPlaceholder: "Collez votre JSON ici...",
+                    format: "Formater JSON",
+                    minify: "Minifier",
+                    validate: "Valider",
+                    clear: "Effacer",
+                    jsonFormatterDesc: "Formatez, validez et minifiez les données JSON avec une indentation appropriée. Essentiel pour les développeurs travaillant avec des API.",
+                    markdownPreview: "Aperçu Markdown",
+                    markdownPlaceholder: "Écrivez votre Markdown ici...",
+                    updatePreview: "Mettre à jour l'aperçu",
+                    preview: "Aperçu :",
+                    markdownPreviewDesc: "Aperçu du formatage Markdown en temps réel. Prend en charge les en-têtes, les listes, les liens et d'autres syntaxes Markdown courantes.",
+                    emptyJson: "Veuillez d'abord entrer du JSON !",
+                    validJson: "JSON valide",
+                    invalidJson: "JSON invalide"
+                },
+                cookie: {
+                    message: "Nous n'utilisons que des cookies essentiels. En utilisant notre site, vous acceptez notre",
+                    accept: "Accepter"
+                },
+                footer: {
+                    rights: "Tous droits réservés.",
+                    noTracking: "Tous les outils traitent les données localement dans votre navigateur. Aucun suivi."
+                }
+            }
+        };
+
+        // Language functions
+        function changeLanguage() {
+            const lang = document.getElementById('languageSelect').value;
+            localStorage.setItem('language', lang);
+            applyTranslations(lang);
+        }
+
+        function getTranslation(key) {
+            const lang = localStorage.getItem('language') || 'en';
+            const keys = key.split('.');
+            let result = translations[lang];
+            
+            for (const k of keys) {
+                result = result[k];
+                if (result === undefined) {
+                    return translations['en'][keys[0]][keys[1]] || key; // Fallback to English
+                }
+            }
+            
+            return result;
+        }
+
+        function applyTranslations(lang) {
+            // Update all elements with data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = getTranslation(key);
+            });
+            
+            // Update all placeholder texts
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                el.placeholder = getTranslation(key);
+            });
+            
+            // Update select options
+            document.querySelectorAll('option[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = getTranslation(key);
+            });
+        }
+
+        // Initialize language
+        function initLanguage() {
+            const savedLang = localStorage.getItem('language') || 'en';
+            document.getElementById('languageSelect').value = savedLang;
+            applyTranslations(savedLang);
+        }
+
+        // Cookie banner
+        function initCookieBanner() {
+            if (!localStorage.getItem('cookiesAccepted')) {
+                setTimeout(() => {
+                    document.getElementById('cookie-banner').classList.add('show');
+                }, 1000);
+            }
+            
+            document.getElementById('accept-cookies').addEventListener('click', function() {
+                localStorage.setItem('cookiesAccepted', 'true');
+                document.getElementById('cookie-banner').classList.remove('show');
+            });
+        }
+
+        // Service Worker Registration for PWA
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(registration => {
+                            console.log('ServiceWorker registration successful');
+                        })
+                        .catch(err => {
+                            console.log('ServiceWorker registration failed: ', err);
+                        });
+                });
+            }
+        }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            initLanguage();
+            initCookieBanner();
+            registerServiceWorker();
+            
+            // Set current year
+            document.getElementById('year').textContent = new Date().getFullYear();
         });
-    </script>
-
-    <footer>
-        <div class="footer-content">
-            <div class="legal-links">
-                <a href="privacy-policy.html">Privacy Policy</a>
-                <a href="terms-of-use.html">Terms of Use</a>
-                <a href="about.html">About</a>
-            </div>
-            <p class="copyright">
-                © <span id="year"></span> Super Tools 247. All rights reserved.<br>
-                All tools process data locally in your browser. No tracking.
-            </p>
-        </div>
-    </footer>
-
-    <script>
-        document.getElementById('year').textContent = new Date().getFullYear();
     </script>
 </body>
 </html>
