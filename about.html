@@ -1,12 +1,130 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-    <!-- Copy head from index.html -->
-    <title>About - Super Tools 247</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="[REDACTED]">
     <meta name="description" content="Learn about Super Tools 247 - our mission to provide free, privacy-focused online tools that work entirely in your browser.">
+    <title>About - Super Tools 247</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --primary-color: #4a6ee0;
+            --secondary-color: #f0f2f5;
+            --border-color: #e0e0e0;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #f0f0f0;
+            --primary-color: #6d8eff;
+            --secondary-color: #2d2d2d;
+            --border-color: #444444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background 0.3s ease;
+            line-height: 1.6;
+        }
+
+        h1, h2 {
+            color: var(--primary-color);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        /* Navigation */
+        .main-nav {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .main-nav a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .main-nav a:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* About Content */
+        .about-content {
+            background: var(--secondary-color);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .about-content section {
+            margin-bottom: 25px;
+        }
+
+        .about-content ul {
+            padding-left: 20px;
+        }
+
+        .about-content li {
+            margin-bottom: 8px;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--secondary-color);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 50px;
+            padding: 20px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9em;
+        }
+        .legal-links {
+            margin: 10px 0;
+        }
+        .legal-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-    <!-- Include your navigation and theme toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="privacy-policy.html">Privacy</a>
+        <a href="terms-of-use.html">Terms</a>
+    </nav>
 
     <main class="about-content">
         <h1>About Super Tools 247</h1>
@@ -18,6 +136,7 @@
                 <li>100% client-side processing for maximum privacy</li>
                 <li>Simple, ad-supported access to useful tools</li>
                 <li>No registration or data collection requirements</li>
+                <li>Fast, reliable tools that work offline</li>
             </ul>
         </section>
         
@@ -28,16 +147,48 @@
                 <li>Your data never leaves your device</li>
                 <li>No server-side processing or storage</li>
                 <li>Faster performance with no network delays</li>
+                <li>Available even when you're offline</li>
             </ul>
         </section>
         
         <section>
             <h2>Support Us</h2>
             <p>We maintain these tools through advertising revenue. By using our site, you help keep these tools free for everyone.</p>
-            <p>Have suggestions? Email us at: <strong>reedlittlework@gmail.com</strong></p>
+            <p>Have suggestions or feedback? Email us at: <strong>reedlittlework@gmail.com</strong></p>
         </section>
     </main>
 
-    <!-- Include your footer -->
+    <footer>
+        <div class="footer-content">
+            <p>© <span id="year"></span> Super Tools 247. All rights reserved.</p>
+            <div class="legal-links">
+                <a href="privacy-policy.html">Privacy Policy</a> | 
+                <a href="terms-of-use.html">Terms of Use</a> |
+                <a href="about.html">About</a>
+            </div>
+            <p class="copyright">
+                All tools process data locally in your browser. No tracking.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute("data-theme");
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+            html.setAttribute("data-theme", newTheme);
+            localStorage.setItem("theme", newTheme);
+        }
+
+        // Load saved theme
+        if (localStorage.getItem("theme") === "dark") {
+            document.documentElement.setAttribute("data-theme", "dark");
+        }
+
+        // Auto-update year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
 </body>
 </html>
