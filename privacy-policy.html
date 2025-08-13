@@ -1,15 +1,134 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-    <!-- Copy your existing head content from index.html -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="[REDACTED]">
+    <meta name="description" content="Privacy Policy for Super Tools 247 - All tools work in your browser with no data collection.">
     <title>Privacy Policy - Super Tools 247</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --primary-color: #4a6ee0;
+            --secondary-color: #f0f2f5;
+            --border-color: #e0e0e0;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #f0f0f0;
+            --primary-color: #6d8eff;
+            --secondary-color: #2d2d2d;
+            --border-color: #444444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background 0.3s ease;
+            line-height: 1.6;
+        }
+
+        h1, h2 {
+            color: var(--primary-color);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        /* Navigation */
+        .main-nav {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .main-nav a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .main-nav a:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Policy Content */
+        .policy-content {
+            background: var(--secondary-color);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .policy-content section {
+            margin-bottom: 25px;
+        }
+
+        .policy-content ul {
+            padding-left: 20px;
+        }
+
+        .policy-content li {
+            margin-bottom: 8px;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--secondary-color);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 50px;
+            padding: 20px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9em;
+        }
+        .legal-links {
+            margin: 10px 0;
+        }
+        .legal-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-    <!-- Copy your header/navigation from index.html -->
-    
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="privacy-policy.html">Privacy</a>
+        <a href="terms-of-use.html">Terms</a>
+    </nav>
+
     <main class="policy-content">
         <h1>Privacy Policy</h1>
-        <p>Last Updated: August 2025</p>
+        <p><em>Last Updated: August 2025</em></p>
         
         <section>
             <h2>1. Information We Collect</h2>
@@ -30,9 +149,48 @@
             </ul>
         </section>
         
-        <!-- Add more sections as needed -->
+        <section>
+            <h2>3. Third-Party Services</h2>
+            <p>We use Google AdSense for advertising. They may collect data according to their own policies.</p>
+        </section>
+        
+        <section>
+            <h2>4. Changes to This Policy</h2>
+            <p>We may update this policy occasionally. The "Last Updated" date will reflect any changes.</p>
+        </section>
     </main>
-    
-    <!-- Copy your footer from index.html -->
+
+    <footer>
+        <div class="footer-content">
+            <p>© <span id="year"></span> Super Tools 247. All rights reserved.</p>
+            <div class="legal-links">
+                <a href="privacy-policy.html">Privacy Policy</a> | 
+                <a href="terms-of-use.html">Terms of Use</a> |
+                <a href="about.html">About</a>
+            </div>
+            <p class="copyright">
+                All tools process data locally in your browser. No tracking.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute("data-theme");
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+            html.setAttribute("data-theme", newTheme);
+            localStorage.setItem("theme", newTheme);
+        }
+
+        // Load saved theme
+        if (localStorage.getItem("theme") === "dark") {
+            document.documentElement.setAttribute("data-theme", "dark");
+        }
+
+        // Auto-update year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
 </body>
 </html>
