@@ -161,18 +161,28 @@
             z-index: 100;
         }
 
+        /* Tool description styling */
+        .tool-description {
+            font-size: 0.9em;
+            color: var(--text-color);
+            opacity: 0.8;
+            margin-top: 10px;
+            padding: 5px;
+            border-left: 3px solid var(--primary-color);
+            background-color: rgba(74, 110, 224, 0.05);
+        }
 
         /* For dark theme QR display */
-[data-theme="dark"] #qrCode {
-    background-color: #1a1a1a;
-    padding: 20px;
-}
+        [data-theme="dark"] #qrCode {
+            background-color: #1a1a1a;
+            padding: 20px;
+        }
 
-/* For light theme QR display */
-[data-theme="light"] #qrCode {
-    background-color: #ffffff;
-    padding: 20px;
-}
+        /* For light theme QR display */
+        [data-theme="light"] #qrCode {
+            background-color: #ffffff;
+            padding: 20px;
+        }
 
         /* Responsive Adjustments */
         @media (max-width: 600px) {
@@ -189,31 +199,31 @@
 <body>
     <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
     <nav class="main-nav">
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="privacy-policy.html">Privacy</a>
-    <a href="terms-of-use.html">Terms</a>
-</nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="privacy-policy.html">Privacy</a>
+        <a href="terms-of-use.html">Terms</a>
+    </nav>
 
-<style>
-    .main-nav {
-        display: flex;
-        gap: 15px;
-        justify-content: center;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-    }
-    .main-nav a {
-        color: var(--primary-color);
-        text-decoration: none;
-        font-weight: 500;
-        padding: 5px 10px;
-        border-radius: 5px;
-    }
-    .main-nav a:hover {
-        background-color: var(--secondary-color);
-    }
-</style>
+    <style>
+        .main-nav {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .main-nav a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .main-nav a:hover {
+            background-color: var(--secondary-color);
+        }
+    </style>
     <h1>Super Tools 247</h1>
     <p class="subtitle">All-in-one utilities for developers, writers, and more!</p>
 
@@ -234,6 +244,9 @@
                 <strong>Words:</strong> <span id="wordCount">0</span> | 
                 <strong>Characters:</strong> <span id="charCount">0</span>
             </div>
+            <div class="tool-description">
+                Counts words and characters in your text. Useful for writers, students, and social media posts with character limits.
+            </div>
         </div>
 
         <div class="tool">
@@ -241,12 +254,18 @@
             <textarea id="caseInput" placeholder="Type text to convert..."></textarea>
             <button onclick="convertToUpper()">UPPERCASE</button>
             <button onclick="convertToLower()">lowercase</button>
+            <div class="tool-description">
+                Convert text between uppercase and lowercase. Helpful for formatting titles, headings, or normalizing text.
+            </div>
         </div>
 
         <div class="tool">
             <h3>Random Password Generator</h3>
             <button onclick="generatePassword()">Generate Password</button>
             <div id="passwordResult" class="output"></div>
+            <div class="tool-description">
+                Creates a strong 12-character password with uppercase, lowercase, numbers, and special characters.
+            </div>
         </div>
     </div>
 
@@ -258,6 +277,9 @@
             <button onclick="base64Encode()">Encode</button>
             <button onclick="base64Decode()">Decode</button>
             <div id="base64Output" class="output"></div>
+            <div class="tool-description">
+                Base64 encoding converts binary data to ASCII characters. Commonly used for data URLs and basic obfuscation.
+            </div>
         </div>
 
         <div class="tool">
@@ -266,6 +288,9 @@
             <button onclick="urlEncode()">Encode</button>
             <button onclick="urlDecode()">Decode</button>
             <div id="urlOutput" class="output"></div>
+            <div class="tool-description">
+                URL encoding converts special characters to percent-encoded format. Essential for web development when passing parameters.
+            </div>
         </div>
     </div>
 
@@ -279,6 +304,9 @@
             <div id="qrCode" class="output">
                 QR Code will appear here
             </div>
+            <div class="tool-description">
+                Create scannable QR codes for URLs, contact information, WiFi credentials, or any text. Works offline.
+            </div>
         </div>
     </div>
 
@@ -290,6 +318,9 @@
             <button onclick="generateLoremIpsum(3)">3 Paragraphs</button>
             <button onclick="generateLoremIpsum(5)">5 Paragraphs</button>
             <div id="loremOutput" class="output"></div>
+            <div class="tool-description">
+                Generate placeholder text for design mockups and document layouts. Standard "Lorem ipsum" dummy text.
+            </div>
         </div>
     </div>
 
@@ -360,66 +391,66 @@
         // QR Generator
         let qrCodeInstance = null;
 
-function generateQR() {
-    const text = document.getElementById('qrText').value.trim();
-    const qrDiv = document.getElementById('qrCode');
-    const downloadBtn = document.getElementById('downloadBtn');
-    
-    if (!text) {
-        qrDiv.innerHTML = "Please enter text first!";
-        downloadBtn.disabled = true;
-        return;
-    }
+        function generateQR() {
+            const text = document.getElementById('qrText').value.trim();
+            const qrDiv = document.getElementById('qrCode');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            if (!text) {
+                qrDiv.innerHTML = "Please enter text first!";
+                downloadBtn.disabled = true;
+                return;
+            }
 
-    qrDiv.innerHTML = '';
-    downloadBtn.disabled = false;
+            qrDiv.innerHTML = '';
+            downloadBtn.disabled = false;
 
-    // Determine current theme
-    const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
-    
-    try {
-        qrCodeInstance = new QRCode(qrDiv, {
-            text: text,
-            width: 200,
-            height: 200,
-            colorDark: isDarkTheme ? '#ffffff' : '#000000',
-            colorLight: isDarkTheme ? '#1a1a1a' : '#ffffff',
-            correctLevel: QRCode.CorrectLevel.H
-        });
-        
-        // Store current theme state
-        qrCodeInstance._themeState = isDarkTheme;
-    } catch (e) {
-        qrDiv.innerHTML = "Error generating QR code";
-        console.error(e);
-    }
-}
+            // Determine current theme
+            const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+            
+            try {
+                qrCodeInstance = new QRCode(qrDiv, {
+                    text: text,
+                    width: 200,
+                    height: 200,
+                    colorDark: isDarkTheme ? '#ffffff' : '#000000',
+                    colorLight: isDarkTheme ? '#1a1a1a' : '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                
+                // Store current theme state
+                qrCodeInstance._themeState = isDarkTheme;
+            } catch (e) {
+                qrDiv.innerHTML = "Error generating QR code";
+                console.error(e);
+            }
+        }
 
-function downloadQR() {
-    if (!qrCodeInstance) return;
-    
-    const canvas = document.querySelector('#qrCode canvas');
-    if (!canvas) return;
-    
-    // Create a temporary canvas for download with consistent colors
-    const tempCanvas = document.createElement('canvas');
-    const ctx = tempCanvas.getContext('2d');
-    tempCanvas.width = canvas.width;
-    tempCanvas.height = canvas.height;
-    
-    // Fill background (always white for downloaded QR)
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-    
-    // Draw QR code (always black for downloaded QR)
-    ctx.drawImage(canvas, 0, 0);
-    
-    // Convert to image and download
-    const link = document.createElement('a');
-    link.download = 'qr-code.png';
-    link.href = tempCanvas.toDataURL('image/png');
-    link.click();
-}
+        function downloadQR() {
+            if (!qrCodeInstance) return;
+            
+            const canvas = document.querySelector('#qrCode canvas');
+            if (!canvas) return;
+            
+            // Create a temporary canvas for download with consistent colors
+            const tempCanvas = document.createElement('canvas');
+            const ctx = tempCanvas.getContext('2d');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+            
+            // Fill background (always white for downloaded QR)
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            
+            // Draw QR code (always black for downloaded QR)
+            ctx.drawImage(canvas, 0, 0);
+            
+            // Convert to image and download
+            const link = document.createElement('a');
+            link.download = 'qr-code.png';
+            link.href = tempCanvas.toDataURL('image/png');
+            link.click();
+        }
 
         // Lorem Ipsum Generator
         function generateLoremIpsum(paragraphs) {
@@ -451,67 +482,67 @@ function downloadQR() {
         }
     </script>
     <div id="cookie-banner" class="hidden">
-    <p>We use only essential cookies. By using our site, you agree to our 
-       <a href="privacy-policy.html">Privacy Policy</a>.</p>
-    <button id="accept-cookies">Accept</button>
-</div>
+        <p>We use only essential cookies. By using our site, you agree to our 
+           <a href="privacy-policy.html">Privacy Policy</a>.</p>
+        <button id="accept-cookies">Accept</button>
+    </div>
 
-<style>
-    #cookie-banner {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: var(--secondary-color);
-        padding: 15px;
-        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        z-index: 1000;
-    }
-    #cookie-banner.hidden {
-        display: none;
-    }
-    #accept-cookies {
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 5px 15px;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-</style>
+    <style>
+        #cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--secondary-color);
+            padding: 15px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+        }
+        #cookie-banner.hidden {
+            display: none;
+        }
+        #accept-cookies {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
 
-<script>
-    if (!localStorage.getItem('cookiesAccepted')) {
-        document.getElementById('cookie-banner').classList.remove('hidden');
-    }
-    
-    document.getElementById('accept-cookies').addEventListener('click', function() {
-        localStorage.setItem('cookiesAccepted', 'true');
-        document.getElementById('cookie-banner').classList.add('hidden');
-    });
-</script>
+    <script>
+        if (!localStorage.getItem('cookiesAccepted')) {
+            document.getElementById('cookie-banner').classList.remove('hidden');
+        }
+        
+        document.getElementById('accept-cookies').addEventListener('click', function() {
+            localStorage.setItem('cookiesAccepted', 'true');
+            document.getElementById('cookie-banner').classList.add('hidden');
+        });
+    </script>
     <div class="intro-content">
-    <h2>About Our Tools</h2>
-    <p>Super Tools 247 provides free, privacy-focused utilities that work entirely in your browser. 
-    All processing happens locally - we never store or transmit your data. Our collection includes:</p>
-    
-    <h3>Popular Tools:</h3>
-    <ul>
-        <li><strong>QR Generator:</strong> Create scannable QR codes for URLs, contact info, WiFi networks</li>
-        <li><strong>Text Utilities:</strong> Count words, change case, generate passwords</li>
-        <li><strong>Encoding Tools:</strong> Base64 and URL encoding/decoding</li>
-    </ul>
-    
-    <h3>How to Use:</h3>
-    <ol>
-        <li>Select your tool from the menu</li>
-        <li>Enter your input text/URL</li>
-        <li>Get instant results with no server processing</li>
-    </ol>
-</div>
+        <h2>About Our Tools</h2>
+        <p>Super Tools 247 provides free, privacy-focused utilities that work entirely in your browser. 
+        All processing happens locally - we never store or transmit your data. Our collection includes:</p>
+        
+        <h3>Popular Tools:</h3>
+        <ul>
+            <li><strong>QR Generator:</strong> Create scannable QR codes for URLs, contact info, WiFi networks</li>
+            <li><strong>Text Utilities:</strong> Count words, change case, generate passwords</li>
+            <li><strong>Encoding Tools:</strong> Base64 and URL encoding/decoding</li>
+        </ul>
+        
+        <h3>How to Use:</h3>
+        <ol>
+            <li>Select your tool from the menu</li>
+            <li>Enter your input text/URL</li>
+            <li>Get instant results with no server processing</li>
+        </ol>
+    </div>
 
 </body>
 <footer>
@@ -551,12 +582,3 @@ function downloadQR() {
 </script>
 
 </html>
-
-
-
-
-
-
-
-
-
