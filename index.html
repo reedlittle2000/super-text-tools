@@ -31,7 +31,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
             background-color: var(--bg-color);
@@ -42,17 +42,47 @@
             flex-direction: column;
         }
 
-        h1 {
-            color: var(--primary-color);
-            text-align: center;
-            margin-bottom: 10px;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        p.subtitle {
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .main-nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+
+        .main-nav a:hover {
+            color: var(--primary-color);
+            background-color: var(--secondary-color);
+        }
+
+        .subtitle {
             text-align: center;
             color: var(--text-color);
             opacity: 0.8;
             margin-bottom: 30px;
+            font-size: 1.1rem;
         }
 
         .tabs {
@@ -64,7 +94,7 @@
         }
 
         .tab-button {
-            padding: 10px 15px;
+            padding: 12px 20px;
             background: var(--secondary-color);
             border: none;
             border-radius: 5px 5px 0 0;
@@ -72,6 +102,7 @@
             color: var(--text-color);
             font-weight: 500;
             transition: all 0.2s;
+            white-space: nowrap;
         }
 
         .tab-button.active {
@@ -81,7 +112,7 @@
 
         .tab-content {
             display: none;
-            padding: 20px;
+            padding: 25px;
             border-radius: 0 5px 5px 5px;
             background: var(--secondary-color);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -93,22 +124,30 @@
         }
 
         .tool {
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
 
-        textarea, input[type="text"] {
+        .tool h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.3rem;
+        }
+
+        textarea, input[type="text"], input[type="number"], input[type="color"], select {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin: 10px 0;
             border: 1px solid var(--border-color);
             border-radius: 5px;
             background-color: var(--bg-color);
             color: var(--text-color);
             resize: vertical;
+            font-family: inherit;
+            font-size: 0.95rem;
         }
 
         button {
-            padding: 10px 15px;
+            padding: 12px 20px;
             background-color: var(--primary-color);
             color: white;
             border: none;
@@ -118,10 +157,12 @@
             margin-bottom: 10px;
             transition: all 0.2s;
             position: relative;
+            font-weight: 500;
         }
 
         button:hover {
             opacity: 0.9;
+            transform: translateY(-1px);
         }
 
         button[data-tooltip]:hover::after {
@@ -140,7 +181,7 @@
         }
 
         .output {
-            margin-top: 10px;
+            margin-top: 15px;
             padding: 15px;
             background-color: var(--bg-color);
             border: 1px dashed var(--border-color);
@@ -164,27 +205,32 @@
         }
 
         .tool-description {
-            font-size: 0.9em;
+            font-size: 0.95em;
             color: var(--text-color);
             opacity: 0.8;
-            margin-top: 5px;
-            padding-left: 5px;
+            margin-top: 10px;
+            padding-left: 10px;
             border-left: 3px solid var(--primary-color);
         }
 
-        #qrCode {
+        #qrCode, #wifiQrCode {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 250px;
             flex-direction: column;
             position: relative;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            border-radius: 8px;
         }
 
-        #qrCode canvas {
+        #qrCode canvas, #wifiQrCode canvas {
             max-width: 100%;
             height: auto;
             margin: 10px 0;
+            border: 1px solid var(--border-color);
         }
 
         .loader {
@@ -203,16 +249,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        [data-theme="dark"] #qrCode {
-            background-color: #1a1a1a;
-            padding: 20px;
-        }
-
-        [data-theme="light"] #qrCode {
-            background-color: #ffffff;
-            padding: 20px;
-        }
-
         .theme-toggle {
             position: fixed;
             top: 20px;
@@ -228,69 +264,198 @@
             justify-content: center;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             z-index: 100;
+            transition: all 0.2s;
         }
 
-        .main-nav {
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .option-group {
+            background: var(--bg-color);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .option-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .option-group input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .color-picker-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        input[type="color"] {
+            width: 60px;
+            height: 40px;
+            padding: 0;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--secondary-color);
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        #cookie-banner p {
+            margin: 0 0 10px 0;
+        }
+
+        #markdownPreview {
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 5px;
+            background: var(--bg-color);
+            min-height: 100px;
+        }
+
+        .qr-border-options {
             display: flex;
             gap: 15px;
-            justify-content: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            margin-top: 15px;
         }
-        .main-nav a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
-            padding: 5px 10px;
+
+        .qr-border-option {
+            flex: 1;
+        }
+
+        .qr-border-preview {
+            width: 100%;
+            height: 100px;
+            border: 1px solid var(--border-color);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-color);
             border-radius: 5px;
         }
-        .main-nav a:hover {
-            background-color: var(--secondary-color);
+
+        .qr-border-preview canvas {
+            max-width: 80%;
+            max-height: 80%;
         }
 
         footer {
             margin-top: auto;
-            padding: 20px 0;
+            padding: 30px 0 20px;
             text-align: center;
             border-top: 1px solid var(--border-color);
             font-size: 0.9em;
         }
+
         .legal-links {
-            margin: 10px 0;
+            margin: 15px 0;
         }
+
         .legal-links a {
             color: var(--primary-color);
             text-decoration: none;
+            margin: 0 10px;
         }
 
-        @media (max-width: 600px) {
+        .copyright {
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .main-nav {
+                width: 100%;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
             .tabs {
                 flex-wrap: wrap;
             }
+
             .tab-button {
                 flex: 1;
                 text-align: center;
+                padding: 10px 15px;
+            }
+
+            .options-container {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
     <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-    <nav class="main-nav">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="privacy-policy.html">Privacy</a>
-        <a href="terms-of-use.html">Terms</a>
-    </nav>
+    
+    <div class="header">
+        <a href="index.html" class="logo">Super Tools 247</a>
+        <nav class="main-nav">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="privacy-policy.html">Privacy</a>
+            <a href="terms-of-use.html">Terms</a>
+        </nav>
+    </div>
 
-    <h1>Super Tools 247</h1>
     <p class="subtitle">All-in-one utilities for developers, writers, and more!</p>
 
     <div class="tabs">
         <button class="tab-button active" onclick="openTab('text-tools')">📝 Text Tools</button>
         <button class="tab-button" onclick="openTab('encode-tools')">🔗 Encode/Decode</button>
         <button class="tab-button" onclick="openTab('qr-generator')">🔳 QR Generator</button>
+        <button class="tab-button" onclick="openTab('wifi-qr-generator')">📶 WiFi QR Generator</button>
         <button class="tab-button" onclick="openTab('lorem-ipsum')">✒️ Lorem Ipsum</button>
+        <button class="tab-button" onclick="openTab('dev-tools')">💻 Dev Tools</button>
     </div>
 
     <div id="text-tools" class="tab-content active">
@@ -318,13 +483,27 @@
 
         <div class="tool">
             <h3>Random Password Generator</h3>
+            <div class="options-container">
+                <div class="option-group">
+                    <label for="passwordLength">Password Length:</label>
+                    <input type="number" id="passwordLength" min="8" max="32" value="12">
+                </div>
+                <div class="option-group">
+                    <label><input type="checkbox" id="useUppercase" checked> Uppercase (A-Z)</label>
+                    <label><input type="checkbox" id="useLowercase" checked> Lowercase (a-z)</label>
+                </div>
+                <div class="option-group">
+                    <label><input type="checkbox" id="useNumbers" checked> Numbers (0-9)</label>
+                    <label><input type="checkbox" id="useSymbols" checked> Symbols (!@#$)</label>
+                </div>
+            </div>
             <button onclick="generatePassword()" data-tooltip="Generate secure password">Generate Password</button>
             <div id="passwordResult" class="output">
                 <span id="passwordText"></span>
                 <button class="copy-btn" onclick="copyToClipboard('passwordText')" data-tooltip="Copy to clipboard">Copy</button>
             </div>
             <p class="tool-description">
-                Creates a strong 12-character password with uppercase, lowercase, numbers, and special characters.
+                Create strong passwords with customizable length and character sets.
             </p>
         </div>
     </div>
@@ -357,21 +536,150 @@
                 URL encoding converts special characters to percent-encoded format. Essential for web development when passing parameters.
             </p>
         </div>
+
+        <div class="tool">
+            <h3>Color Picker (HEX/RGB)</h3>
+            <div class="color-picker-container">
+                <input type="color" id="colorPicker" value="#4a6ee0">
+                <span class="color-preview" id="colorPreview" style="background-color: #4a6ee0;"></span>
+            </div>
+            <div class="output" style="margin-top: 15px;">
+                <div>
+                    <strong>HEX:</strong> <span id="hexValue">#4a6ee0</span>
+                    <button class="copy-btn" onclick="copyToClipboard('hexValue')" data-tooltip="Copy HEX">Copy</button>
+                </div>
+                <div style="margin-top: 10px;">
+                    <strong>RGB:</strong> <span id="rgbValue">rgb(74, 110, 224)</span>
+                    <button class="copy-btn" onclick="copyToClipboard('rgbValue')" data-tooltip="Copy RGB">Copy</button>
+                </div>
+            </div>
+            <p class="tool-description">
+                Pick colors and convert between HEX and RGB formats. Useful for web design and development.
+            </p>
+        </div>
     </div>
 
     <div id="qr-generator" class="tab-content">
         <div class="tool">
             <h3>QR Code Generator</h3>
             <input type="text" id="qrText" placeholder="Enter text or URL...">
+            
+            <div class="options-container">
+                <div class="option-group">
+                    <label for="qrColor">QR Color:</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="qrColor" value="#000000">
+                        <span class="color-preview" id="qrColorPreview" style="background-color: #000000;"></span>
+                    </div>
+                </div>
+                <div class="option-group">
+                    <label for="qrBgColor">Background:</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="qrBgColor" value="#ffffff">
+                        <span class="color-preview" id="qrBgColorPreview" style="background-color: #ffffff;"></span>
+                    </div>
+                </div>
+                <div class="option-group">
+                    <label for="qrErrorCorrection">Error Correction:</label>
+                    <select id="qrErrorCorrection">
+                        <option value="L">Low (7%)</option>
+                        <option value="M">Medium (15%)</option>
+                        <option value="Q">Quartile (25%)</option>
+                        <option value="H" selected>High (30%)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="option-group">
+                <label for="qrBorderStyle">Border Style:</label>
+                <select id="qrBorderStyle">
+                    <option value="none">No Border</option>
+                    <option value="solid" selected>Solid Border</option>
+                    <option value="dashed">Dashed Border</option>
+                    <option value="dotted">Dotted Border</option>
+                </select>
+            </div>
+
+            <div class="option-group">
+                <label for="qrBorderText">Border Text (optional):</label>
+                <input type="text" id="qrBorderText" placeholder="Enter text to display below QR code">
+            </div>
+            
             <button onclick="generateQR()" data-tooltip="Generate QR code from text">Generate QR Code</button>
             <button onclick="clearQR()" class="clear-btn" data-tooltip="Clear QR code">Clear</button>
             <button onclick="downloadQR()" id="downloadBtn" disabled data-tooltip="Download as PNG">Download QR Code</button>
+            
             <div id="qrCode" class="output">
                 <div class="loader" id="qrLoader"></div>
                 <span id="qrPlaceholder">QR Code will appear here</span>
             </div>
             <p class="tool-description">
-                Create scannable QR codes for URLs, contact information, WiFi credentials, or any text. Works offline.
+                Create scannable QR codes for URLs, contact information, or any text. Works offline.
+            </p>
+        </div>
+    </div>
+
+    <div id="wifi-qr-generator" class="tab-content">
+        <div class="tool">
+            <h3>WiFi QR Code Generator</h3>
+            <div class="options-container">
+                <div class="option-group">
+                    <label for="wifiSsid">Network Name (SSID):</label>
+                    <input type="text" id="wifiSsid" placeholder="Enter your WiFi network name">
+                </div>
+                <div class="option-group">
+                    <label for="wifiEncryption">Encryption Type:</label>
+                    <select id="wifiEncryption">
+                        <option value="WPA">WPA/WPA2</option>
+                        <option value="WEP">WEP</option>
+                        <option value="">None (Open)</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <label for="wifiPassword">Password:</label>
+                    <input type="text" id="wifiPassword" placeholder="Enter WiFi password (leave empty for open networks)">
+                </div>
+                <div class="option-group">
+                    <label><input type="checkbox" id="wifiHidden"> Hidden network</label>
+                </div>
+            </div>
+
+            <div class="options-container">
+                <div class="option-group">
+                    <label for="wifiQrColor">QR Color:</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="wifiQrColor" value="#000000">
+                        <span class="color-preview" id="wifiQrColorPreview" style="background-color: #000000;"></span>
+                    </div>
+                </div>
+                <div class="option-group">
+                    <label for="wifiQrBgColor">Background:</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="wifiQrBgColor" value="#ffffff">
+                        <span class="color-preview" id="wifiQrBgColorPreview" style="background-color: #ffffff;"></span>
+                    </div>
+                </div>
+                <div class="option-group">
+                    <label for="wifiQrErrorCorrection">Error Correction:</label>
+                    <select id="wifiQrErrorCorrection">
+                        <option value="L">Low (7%)</option>
+                        <option value="M">Medium (15%)</option>
+                        <option value="Q">Quartile (25%)</option>
+                        <option value="H" selected>High (30%)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="generateWifiQR()" data-tooltip="Generate WiFi QR code">Generate WiFi QR</button>
+            <button onclick="clearWifiQR()" class="clear-btn" data-tooltip="Clear QR code">Clear</button>
+            <button onclick="downloadWifiQR()" id="downloadWifiBtn" disabled data-tooltip="Download as PNG">Download QR Code</button>
+            
+            <div id="wifiQrCode" class="output">
+                <div class="loader" id="wifiQrLoader"></div>
+                <span id="wifiQrPlaceholder">WiFi QR Code will appear here</span>
+            </div>
+            <p class="tool-description">
+                Create scannable QR codes for WiFi networks. Users can scan to connect automatically.
             </p>
         </div>
     </div>
@@ -385,6 +693,40 @@
             <div id="loremOutput" class="output"></div>
             <p class="tool-description">
                 Generate placeholder text for design mockups and document layouts. Standard "Lorem ipsum" dummy text.
+            </p>
+        </div>
+    </div>
+
+    <div id="dev-tools" class="tab-content">
+        <div class="tool">
+            <h3>JSON Formatter</h3>
+            <textarea id="jsonInput" placeholder="Paste your JSON here..." rows="8"></textarea>
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <button onclick="formatJson()" data-tooltip="Format and validate JSON">Format JSON</button>
+                <button onclick="minifyJson()" data-tooltip="Minify JSON">Minify</button>
+                <button onclick="validateJson()" data-tooltip="Validate JSON syntax">Validate</button>
+                <button onclick="clearJson()" class="clear-btn" data-tooltip="Clear JSON">Clear</button>
+            </div>
+            <div id="jsonOutput" class="output" style="min-height: 100px;"></div>
+            <p class="tool-description">
+                Format, validate and minify JSON data with proper indentation. Essential for developers working with APIs.
+            </p>
+        </div>
+
+        <div class="tool">
+            <h3>Markdown Preview</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <textarea id="markdownInput" placeholder="Write your Markdown here..." rows="12"></textarea>
+                    <button onclick="updateMarkdownPreview()" style="margin-top: 10px;">Update Preview</button>
+                </div>
+                <div>
+                    <h4 style="margin-top: 0;">Preview:</h4>
+                    <div id="markdownPreview"></div>
+                </div>
+            </div>
+            <p class="tool-description">
+                Preview Markdown formatting in real-time. Supports headings, lists, links, and other common Markdown syntax.
             </p>
         </div>
     </div>
@@ -428,17 +770,33 @@
             document.getElementById('caseInput').value = text.toLowerCase();
         }
 
-        // Password Generator
+        // Password Generator (Enhanced)
         function generatePassword() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+            const length = parseInt(document.getElementById('passwordLength').value) || 12;
+            const useUppercase = document.getElementById('useUppercase').checked;
+            const useLowercase = document.getElementById('useLowercase').checked;
+            const useNumbers = document.getElementById('useNumbers').checked;
+            const useSymbols = document.getElementById('useSymbols').checked;
+            
+            let chars = '';
+            if (useUppercase) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (useLowercase) chars += 'abcdefghijklmnopqrstuvwxyz';
+            if (useNumbers) chars += '0123456789';
+            if (useSymbols) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            if (!chars) {
+                alert('Please select at least one character type!');
+                return;
+            }
+            
             let password = '';
-            for (let i = 0; i < 12; i++) {
+            for (let i = 0; i < length; i++) {
                 password += chars.charAt(Math.floor(Math.random() * chars.length));
             }
             document.getElementById('passwordText').textContent = password;
         }
 
-        // Clipboard Function (FIXED - No more permission errors)
+        // Clipboard Function
         function copyToClipboard(elementId) {
             const text = document.getElementById(elementId).innerText;
             const textarea = document.createElement('textarea');
@@ -489,8 +847,22 @@
             document.getElementById('urlText').textContent = decodeURIComponent(text);
         }
 
-        // QR Generator (FIXED - No more null errors)
+        // Color Picker
+        document.getElementById('colorPicker').addEventListener('input', function() {
+            const hex = this.value;
+            document.getElementById('hexValue').textContent = hex;
+            document.getElementById('colorPreview').style.backgroundColor = hex;
+            
+            // Convert HEX to RGB
+            const r = parseInt(hex.substr(1, 2), 16);
+            const g = parseInt(hex.substr(3, 2), 16);
+            const b = parseInt(hex.substr(5, 2), 16);
+            document.getElementById('rgbValue').textContent = `rgb(${r}, ${g}, ${b})`;
+        });
+
+        // QR Generator
         let qrCodeInstance = null;
+        let wifiQrCodeInstance = null;
 
         function generateQR() {
             const text = document.getElementById('qrText').value.trim();
@@ -523,27 +895,120 @@
                 qrCodeInstance = null;
             }
 
+            // Use setTimeout to allow UI to update before generating QR
             setTimeout(() => {
                 try {
-                    const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+                    const color = document.getElementById('qrColor').value;
+                    const bgColor = document.getElementById('qrBgColor').value;
+                    const errorCorrection = document.getElementById('qrErrorCorrection').value;
+                    const borderText = document.getElementById('qrBorderText').value;
+                    const borderStyle = document.getElementById('qrBorderStyle').value;
+                    
                     qrDiv.innerHTML = ''; // Clear loader
-                    qrCodeInstance = new QRCode(qrDiv, {
+                    
+                    // Create container for QR and border text
+                    const container = document.createElement('div');
+                    container.style.textAlign = 'center';
+                    
+                    // Generate QR code
+                    qrCodeInstance = new QRCode(container, {
                         text: text,
                         width: 200,
                         height: 200,
-                        colorDark: isDarkTheme ? '#ffffff' : '#000000',
-                        colorLight: isDarkTheme ? '#1a1a1a' : '#ffffff',
-                        correctLevel: QRCode.CorrectLevel.H
+                        colorDark: color,
+                        colorLight: bgColor,
+                        correctLevel: QRCode.CorrectLevel[errorCorrection]
                     });
+                    
+                    // Add border style
+                    const canvas = container.querySelector('canvas');
+                    if (borderStyle !== 'none') {
+                        canvas.style.border = `5px ${borderStyle} ${color}`;
+                        canvas.style.padding = '10px';
+                    }
+                    
+                    // Add border text if provided
+                    if (borderText) {
+                        const textElement = document.createElement('div');
+                        textElement.textContent = borderText;
+                        textElement.style.marginTop = '10px';
+                        textElement.style.fontWeight = 'bold';
+                        textElement.style.color = color;
+                        container.appendChild(textElement);
+                    }
+                    
+                    qrDiv.appendChild(container);
                     downloadBtn.disabled = false;
                 } catch (e) {
                     qrDiv.innerHTML = '<span id="qrPlaceholder">Error generating QR</span>';
                     console.error("QR Error:", e);
                 }
-            }, 500);
+            }, 100);
         }
 
-        // Clear QR Code
+        function generateWifiQR() {
+            const ssid = document.getElementById('wifiSsid').value.trim();
+            const wifiQrDiv = document.getElementById('wifiQrCode');
+            const wifiPlaceholder = document.getElementById('wifiQrPlaceholder');
+            const wifiDownloadBtn = document.getElementById('downloadWifiBtn');
+            
+            if (!ssid) {
+                wifiPlaceholder.textContent = "Please enter WiFi network name!";
+                wifiDownloadBtn.disabled = true;
+                return;
+            }
+            
+            const password = document.getElementById('wifiPassword').value;
+            const encryption = document.getElementById('wifiEncryption').value;
+            const hidden = document.getElementById('wifiHidden').checked ? 'true' : 'false';
+            const text = `WIFI:T:${encryption};S:${ssid};P:${password};H:${hidden};;`;
+
+            // Clear previous QR code completely
+            wifiQrDiv.innerHTML = '';
+            
+            // Create new loader element
+            const loader = document.createElement('div');
+            loader.className = 'loader';
+            loader.id = 'wifiQrLoader';
+            wifiQrDiv.appendChild(loader);
+            loader.style.display = "block";
+            
+            wifiPlaceholder.textContent = "";
+            wifiDownloadBtn.disabled = true;
+
+            // Destroy old instance
+            if (wifiQrCodeInstance) {
+                wifiQrCodeInstance.clear();
+                wifiQrCodeInstance = null;
+            }
+
+            // Use setTimeout to allow UI to update before generating QR
+            setTimeout(() => {
+                try {
+                    const color = document.getElementById('wifiQrColor').value;
+                    const bgColor = document.getElementById('wifiQrBgColor').value;
+                    const errorCorrection = document.getElementById('wifiQrErrorCorrection').value;
+                    
+                    wifiQrDiv.innerHTML = ''; // Clear loader
+                    
+                    // Generate QR code
+                    wifiQrCodeInstance = new QRCode(wifiQrDiv, {
+                        text: text,
+                        width: 200,
+                        height: 200,
+                        colorDark: color,
+                        colorLight: bgColor,
+                        correctLevel: QRCode.CorrectLevel[errorCorrection]
+                    });
+                    
+                    wifiDownloadBtn.disabled = false;
+                } catch (e) {
+                    wifiQrDiv.innerHTML = '<span id="wifiQrPlaceholder">Error generating QR</span>';
+                    console.error("WiFi QR Error:", e);
+                }
+            }, 100);
+        }
+
         function clearQR() {
             const qrDiv = document.getElementById('qrCode');
             const downloadBtn = document.getElementById('downloadBtn');
@@ -558,6 +1023,21 @@
             downloadBtn.disabled = true;
         }
 
+        function clearWifiQR() {
+            const wifiQrDiv = document.getElementById('wifiQrCode');
+            const wifiDownloadBtn = document.getElementById('downloadWifiBtn');
+            
+            if (wifiQrCodeInstance) {
+                wifiQrCodeInstance.clear();
+                wifiQrCodeInstance = null;
+            }
+            
+            wifiQrDiv.innerHTML = '<span id="wifiQrPlaceholder">WiFi QR Code will appear here</span>';
+            document.getElementById('wifiSsid').value = '';
+            document.getElementById('wifiPassword').value = '';
+            wifiDownloadBtn.disabled = true;
+        }
+
         function downloadQR() {
             if (!qrCodeInstance) return;
             
@@ -566,12 +1046,24 @@
             
             const tempCanvas = document.createElement('canvas');
             const ctx = tempCanvas.getContext('2d');
-            tempCanvas.width = canvas.width;
-            tempCanvas.height = canvas.height;
+            tempCanvas.width = canvas.width + 40; // Add padding for border
+            tempCanvas.height = canvas.height + 40;
             
-            ctx.fillStyle = '#ffffff';
+            // Draw background
+            ctx.fillStyle = document.getElementById('qrBgColor').value;
             ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-            ctx.drawImage(canvas, 0, 0);
+            
+            // Draw QR code centered
+            ctx.drawImage(canvas, 20, 20);
+            
+            // Add border text if exists
+            const borderText = document.getElementById('qrBorderText').value;
+            if (borderText) {
+                ctx.fillStyle = document.getElementById('qrColor').value;
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(borderText, tempCanvas.width / 2, tempCanvas.height - 10);
+            }
             
             const link = document.createElement('a');
             link.download = 'qr-code.png';
@@ -579,29 +1071,152 @@
             link.click();
         }
 
-        // Lorem Ipsum Generator
-        function generateLoremIpsum(paragraphs) {
-            const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
-            let output = "";
-            for (let i = 0; i < paragraphs; i++) {
-                output += `<p>${lorem}</p>`;
+        function downloadWifiQR() {
+            if (!wifiQrCodeInstance) return;
+            
+            const canvas = document.querySelector('#wifiQrCode canvas');
+            if (!canvas) return;
+            
+            const tempCanvas = document.createElement('canvas');
+            const ctx = tempCanvas.getContext('2d');
+            tempCanvas.width = canvas.width + 40;
+            tempCanvas.height = canvas.height + 40;
+            
+            // Draw background
+            ctx.fillStyle = document.getElementById('wifiQrBgColor').value;
+            ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            
+            // Draw QR code centered
+            ctx.drawImage(canvas, 20, 20);
+            
+            // Add network name as text
+            const ssid = document.getElementById('wifiSsid').value;
+            if (ssid) {
+                ctx.fillStyle = document.getElementById('wifiQrColor').value;
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(ssid, tempCanvas.width / 2, tempCanvas.height - 10);
             }
-            document.getElementById('loremOutput').innerHTML = output;
+            
+            const link = document.createElement('a');
+            link.download = 'wifi-qr-code.png';
+            link.href = tempCanvas.toDataURL('image/png');
+            link.click();
         }
 
-        // Theme Toggle
-        function toggleTheme() {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute("data-theme");
-            const newTheme = currentTheme === "dark" ? "light" : "dark";
-            html.setAttribute("data-theme", newTheme);
-            localStorage.setItem("theme", newTheme);
-            
-            // Only regenerate QR if there's content
-            if (document.getElementById('qrText').value.trim()) {
-                generateQR();
+        // Update color previews when color inputs change
+        document.getElementById('qrColor').addEventListener('input', function() {
+            document.getElementById('qrColorPreview').style.backgroundColor = this.value;
+        });
+        
+        document.getElementById('qrBgColor').addEventListener('input', function() {
+            document.getElementById('qrBgColorPreview').style.backgroundColor = this.value;
+        });
+
+        document.getElementById('wifiQrColor').addEventListener('input', function() {
+            document.getElementById('wifiQrColorPreview').style.backgroundColor = this.value;
+        });
+        
+        document.getElementById('wifiQrBgColor').addEventListener('input', function() {
+            document.getElementById('wifiQrBgColorPreview').style.backgroundColor = this.value;
+        });
+
+        // JSON Tools
+        function formatJson() {
+            try {
+                const jsonInput = document.getElementById('jsonInput').value;
+                const jsonObj = JSON.parse(jsonInput);
+                document.getElementById('jsonOutput').innerHTML = `<pre>${JSON.stringify(jsonObj, null, 2)}</pre>`;
+            } catch (e) {
+                document.getElementById('jsonOutput').innerHTML = `<span style="color:red">Invalid JSON: ${e.message}</span>`;
             }
         }
+
+        function minifyJson() {
+            try {
+                const jsonInput = document.getElementById('jsonInput').value;
+                const jsonObj = JSON.parse(jsonInput);
+                document.getElementById('jsonOutput').innerHTML = `<pre>${JSON.stringify(jsonObj)}</pre>`;
+            } catch (e) {
+                document.getElementById('jsonOutput').innerHTML = `<span style="color:red">Invalid JSON: ${e.message}</span>`;
+            }
+        }
+
+        function validateJson() {
+            try {
+                const jsonInput = document.getElementById('jsonInput').value;
+                JSON.parse(jsonInput);
+                document.getElementById('jsonOutput').innerHTML = '<span style="color:green">✓ Valid JSON</span>';
+            } catch (e) {
+                document.getElementById('jsonOutput').innerHTML = `<span style="color:red">Invalid JSON: ${e.message}</span>`;
+            }
+        }
+
+        function clearJson() {
+            document.getElementById('jsonInput').value = '';
+            document.getElementById('jsonOutput').innerHTML = '';
+        }
+
+        // Markdown Preview (Enhanced)
+        function updateMarkdownPreview() {
+            const markdown = document.getElementById('markdownInput').value;
+            let html = markdown
+                // Headers
+                .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+                .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+                .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+                .replace(/^#### (.*$)/gm, '<h4>$1</h4>')
+                // Bold and Italic
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\_\_(.*?)\_\_/g, '<strong>$1</strong>')
+                .replace(/\_(.*?)\_/g, '<em>$1</em>')
+                // Links and Images
+                .replace(/!\[(.*?)\]\((.*?)\)/g, '<img alt="$1" src="$2">')
+                .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
+                // Lists
+                .replace(/^\s*\*\s(.*$)/gm, '<li>$1</li>')
+                .replace(/^\s*-\s(.*$)/gm, '<li>$1</li>')
+                .replace(/^\s*\+\s(.*$)/gm, '<li>$1</li>')
+                // Code
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                // Blockquotes
+                .replace(/^\>\s(.*$)/gm, '<blockquote>$1</blockquote>')
+                // Horizontal Rule
+                .replace(/^\-\-\-$/gm, '<hr>');
+            
+            // Handle line breaks
+            html = html.replace(/\n\n/g, '</p><p>');
+            html = html.replace(/\n/g, '<br>');
+            
+            // Handle lists
+            html = html.replace(/(<li>.*?<\/li>)+/g, function(match) {
+                return '<ul>' + match + '</ul>';
+            });
+            
+            document.getElementById('markdownPreview').innerHTML = '<p>' + html + '</p>';
+        }
+
+// Theme Toggle
+// Keep your working toggleTheme() version
+function toggleTheme() {
+    const html = document.documentElement;
+    const currentTheme = html.getAttribute("data-theme");
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    html.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+    
+    // Only update UI colors without regenerating QR codes
+    updateColorPreviews(); // Add this helper if needed
+}
+
+// Optional helper to update color previews
+function updateColorPreviews() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.style.setProperty('--qr-color', isDark ? '#ffffff' : '#000000');
+    document.documentElement.style.setProperty('--qr-bg-color', isDark ? '#1a1a1a' : '#ffffff');
+}
+
     </script>
 
     <!-- Cookie Banner -->
@@ -624,13 +1239,13 @@
 
     <footer>
         <div class="footer-content">
-            <p>© <span id="year"></span> Super Tools 247. All rights reserved.</p>
             <div class="legal-links">
-                <a href="privacy-policy.html">Privacy Policy</a> | 
-                <a href="terms-of-use.html">Terms of Use</a> |
+                <a href="privacy-policy.html">Privacy Policy</a>
+                <a href="terms-of-use.html">Terms of Use</a>
                 <a href="about.html">About</a>
             </div>
             <p class="copyright">
+                © <span id="year"></span> Super Tools 247. All rights reserved.<br>
                 All tools process data locally in your browser. No tracking.
             </p>
         </div>
